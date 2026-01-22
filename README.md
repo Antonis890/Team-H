@@ -7,3 +7,4 @@ The team members are:
 - Martins Bodnieks
 - Daria Golubeva
 - Okan Sakalli
+- Itelegin

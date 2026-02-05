@@ -1,15 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>landing page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing page</title>
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
-<div class="container">
-<header>
-    <h1>Treasure Hunt Web App</h1>
-    <button class="playing_button" onclick="">Start Playing</button>
+
+<header class="header">
+    <img src="teamH.png" alt="logo" >
+    <ol>
+        <li>Help</li>
+        <li>About</li>
+    </ol>
 </header>
+
+
+<div id="content">
+    <p>
+        Ahoy pirates! And welcome to the Code Cyprus Treasure Hunt!<br><br>
+        if you have questions, select the "help" menu. When you are ready, click the button below to get started
+    </p>
+</div>
+
+<button id="startButton" onclick="startGame()">Let's get started!</button>
 
 <section>
     <h2>Project Scope</h2>
@@ -53,8 +68,6 @@
     <a href="">Testing</a>
     <a href="">Project Notes</a>
 </section>
-
-</div>
 </body>
 
 <!-- Google tag (gtag.js) -->

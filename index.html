@@ -9,11 +9,18 @@
 <body>
 
 <header class="header">
-    <!--<img src= "media/teamH.png" alt= "logo"-->
-    <ol>
-        <li>Help</li>
-        <li>About</li>
-    </ol>
+    <img src= "media/teamH.png" alt= "logo">
+    <nav class="menu" id="menu">
+        <a href="#">Help</a>
+        <a href="#">About</a>
+        <a href="javascript:void(0);" class="icon" onclick="openMenu()">
+            <svg class="menu_icon" xmlns="http://www.w3.org/2000/svg" fill="white" x="0px" y="0px" width="40" height="40" viewBox="0 0 50 50">
+                <path d="M5 8 A2 2 0 1 0 5 12 L45 12 A2 2 0 1 0 45 8 L5 8 z
+                         M5 23 A2 2 0 1 0 5 27 L45 27 A2 2 0 1 0 45 23 L5 23 z
+                         M5 38 A2 2 0 1 0 5 42 L45 42 A2 2 0 1 0 45 38 L5 38 z"></path>
+            </svg>
+        </a>
+    </nav>
 </header>
 
 <div id="content">
@@ -79,4 +86,5 @@
     gtag('config', 'G-H43Q0MHPC9');
 </script>
 
+<script src="index.js"></script>
 </html>

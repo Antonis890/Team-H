@@ -1,6 +1,116 @@
 /*hello there*/
+body {
+    margin: 0;
+    font-family: 'Helvetica', sans-serif;
+    background-color: #F5F5F5;
+    color: #333;
+}
 .container {
     max-width: 900px;
-    margin: auto;
-    padding: 20px;
+    margin: 0 auto;
+    padding: 20px 40px;
+    box-sizing: border-box;
+}
+/* Header styles */
+.header {
+    position: relative;
+    background-color: #2A169A;
+    color: #A7FC47;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100px;
+    padding: 0 20px;
+}
+
+.header img {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 300px;
+    height: auto;
+}
+
+/* Styles for menu */
+.menu a {
+    color: #A7FC47;
+    margin-left: 20px;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.menu a.icon {
+    display: none;
+}
+
+.menu_icon {
+    fill: #A7FC47;
+    display: block;
+}
+
+/* Adaptive menu for mobile */
+@media screen and (max-width: 600px) {
+    .menu a:not(.icon) {
+        display: none;
+    }
+    .menu a.icon {
+        display: block;
+        position: absolute;
+        top: 35px;
+        right: 20px;
+        cursor: pointer;
+    }
+    .menu.responsive {
+        position: absolute;
+        top: 100px;
+        left: 0;
+        width: 100%;
+        background-color: #2A169A;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+    }
+    .menu.responsive a:not(.icon) {
+        display: block;
+        padding: 12px 20px;
+        text-align: left;
+    }
+}
+
+#content, section {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+    text-align: left;
+    line-height: 1.6;
+}
+h2 {
+    color: #2A169A;
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+
+/* Button */
+#startButton {
+    display: block;
+    margin: 30px auto;
+    background-color: #A7FC47;
+    color: #2A169A;
+    border: none;
+    padding: 12px 25px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    margin: 10px 0;
 }

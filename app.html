@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tTreasure Hunt App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>Treasure Hunt</h1>
+</header>
+
+<main id="app">
+    <section id="hunt-selection">
+        <h2>Select a Treasure Hunt</h2>
+        <div id="huntList">Loading Hunts...</div>
+    </section>
+
+    <section id="question-area">
+        <h2 id="question"></h2>
+
+        <div id="answerInput"></div>
+
+        <button id="submitAnswer" onclick="submit(document.getElementById('answerField').value)">Submit Answer</button>
+        <button id="skipBtn" onclick="skipQuestion()">Skip Question</button>
+
+        <p id="feedback"></p>
+    </section>
+
+    <section id="results>">
+        <h2>Your Score</h2>
+        <p id="finalScore"></p>
+
+        <h3>Leaderboard</h3>
+        <div id="leaderboard"></div>
+    </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

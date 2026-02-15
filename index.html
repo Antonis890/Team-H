@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,8 +11,8 @@
 <header class="header">
     <img src= "media/teamH.png" alt= "logo">
     <nav class="menu" id="menu">
-        <a href="#">Help</a>
-        <a href="#">About</a>
+        <a href="#help">Help</a>
+        <a href="#about">About</a>
         <a href="javascript:void(0);" class="icon" onclick="openMenu()">
             <svg class="menu_icon" xmlns="http://www.w3.org/2000/svg" fill="white" x="0px" y="0px" width="40" height="40" viewBox="0 0 50 50">
                 <path d="M5 8 A2 2 0 1 0 5 12 L45 12 A2 2 0 1 0 45 8 L5 8 z
@@ -30,15 +30,12 @@
     </p>
 </div>
 
-<button id="startButton" class="fly-in" onclick="startGame()">
-    Let's get started!
-    <img
-            class="start-icon"
-            src="media/start.png"
-            alt="start"
-    >
+<a href="app.html" style="text-decoration: none;">
+    <button id="startButton" class="fly-in">
+        Let's get started!
+    <img class="start-icon" src="media/start.png" alt="start">
 </button>
-
+</a>
 
 <section class="fly-in">
     <h2>Project Scope</h2>
@@ -79,13 +76,11 @@
 <footer class="fly-in">
     <section class="links">
         <h2>Links</h2>
-        <a href="">Play the App</a>
-        <a href="">Testing</a>
-        <a href="">Project Notes</a>
+        <a href="app.html">Play the App</a>
+        <a href="test.html">Testing</a>
+        <a href="notes.html">Project Notes</a>
     </section>
 </footer>
-
-</body>
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-H43Q0MHPC9"></script>
@@ -93,9 +88,36 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-H43Q0MHPC9');
 </script>
 
-<script src="app.js"></script>
+<script>
+    // Function to open burger menu
+    function openMenu() {
+        var x = document.getElementById("menu");
+        if (x.className === "menu") {
+            x.className += " responsive";
+        } else {
+            x.className = "menu";
+        }
+    }
+
+    // Scroll tracking for animation
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('show');
+                observer.unobserve(entry.target);
+            }
+        });
+        }, {
+        threshold: 0.2
+    });
+
+    document.querySelectorAll('.fly-in').forEach(el => {
+        observer.observe(el);
+    });
+</script>
+
+</body>
 </html>

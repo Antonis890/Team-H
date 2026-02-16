@@ -126,3 +126,18 @@ function showFeedback(message, isSuccess){
     }
     feedback.classList.remove("hidden");
 }
+
+//Update session info in the header
+function updateSessionInfo(){
+    const sessionInfo = document.getElementById("sessionInfo");
+    const playerNameInfo = document.getElementById("playerName");
+    const scoreInfo = document.getElementById("currentScore");
+
+    if (appData.session) {
+        sessionInfo.classList.remove("hidden");
+        playerNameInfo.textContent = appData.playerName;
+        scoreInfo.textContent = "Score: " + appData.score;
+    } else {
+        sessionInfo.classList.add("hidden");
+    }
+}

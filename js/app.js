@@ -1,38 +1,72 @@
+//API SECTION
+const API_LINK="https://codecyprus.org/th/api";
+const APP_NAME = "webapp";
 
+//STORE APP DATA
+const appData = {
+    session: null,
+    playerName: null,
+    currentHunt: null,
+    score: 0,
+    isPlaying: false
+};
 
-//API section
-const API_BASE="https://codecyprus.org/th/api";
+//API FUNCTIONS
+async function callAPI(endpoint) {
+    try {
+        const url = API_LINK + "/" + endpoint;
+        const response = await fetch(url);
+        const data = await response.json();
 
-async function getAPI(endpoint) {
-    const response = await fetch(`${API_BASE}/${endpoint}`);
-    return await response.json();
+        //Check for errors
+        if (data.status === "ERROR") {
+            throw new Error(data.errorMessages);
+        }
+        return data;
+    } catch (error) {
+        console.error("API Error: ", error);
+        throw error;
+    }
 }
 
-//API functions
+//Get all available treasure hunts
 async function getTreasureHunts(){
-    return await getAPI("list");
+    const url = "list"
+    return await callAPI(url);
 }
 
+//Start a game session
 async function startSession(playerName, huntId){
-    return await getAPI(`start?playerName=${playerName}&app=webapp&treasure-hunt-id=${huntId}`);
+    const url = "start?player=" + playerName + "&app=" + APP_NAME + "&treasure-hunt-id=" + huntId;
+    return await callAPI(url);
 }
 
+//Get the next question
 async function getQuestion(session){
-    return await getAPI(`question?session=${session}`);
+    const url = "question?session=" + session
+    return await callAPI(url);
 }
 
+//Submit answer
 async function submitAnswer(session, answer){
-    return await getAPI(`answer?session=${session}&answer=${answer}`);
+    const url = "answer?session=" + session + "&answer=" + answer;
+    return await callAPI(url);
 }
 
+//Skip question
 async function skipQuestion(session){
-    return await getAPI(`skip?session=${session}`);
+    const url = "skip?session=" + session;
+    return await callAPI(url);
 }
 
+//Get current score
 async function getScore(session){
-    return await getAPI(`score?session=${session}`);
+    const url = "score?session=" + session;
+    return await callAPI(url);
 }
 
+//Get leaderboard
 async function getLeaderboard(session){
-    return await getAPI(`leaderboard?session=${session}`);
+    const url = "leaderboard?session=" + session;
+    return await callAPI(url);
 }

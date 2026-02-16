@@ -12,6 +12,8 @@ const appData = {
 };
 
 //API FUNCTIONS
+
+//Call the API
 async function callAPI(endpoint) {
     try {
         const url = API_LINK + "/" + endpoint;
@@ -69,4 +71,58 @@ async function getScore(session){
 async function getLeaderboard(session){
     const url = "leaderboard?session=" + session;
     return await callAPI(url);
+}
+
+//SCREEN FUNCTIONS
+
+//Show specific sections
+function showSection(sectionId){
+    //hide all
+    const sections = document.querySelectorAll(".app-section");
+    for (let i = 0; i < sections.length; i++) {
+        sections[i].classList.remove("active");
+    }
+
+    //show section
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection){
+        targetSection.classList.add("active");
+    }
+}
+
+//Show or hide loading spinner
+function showLoading(show){
+    const overlay = document.getElementById("loadingOverlay");
+    if (show){
+        overlay.classList.remove("hidden");
+    } else{
+        overlay.classList.add("hidden");
+    }
+}
+
+//Show an error message
+function showError(message){
+    document.getElementById("errorMessage").innerContent = message;
+    showSection("error-section")
+}
+
+//Show feedback message
+function showFeedback(message, isSuccess){
+    const feedback = document.getElementById("feedback");
+    if (!feedback){
+     return;
+    }
+    feedback.textContent = message;
+
+    //Remove old classes
+    feedback.classList.remove("success");
+    feedback.classList.remove("error");
+
+    //Add new class
+    if (isSuccess){
+        feedback.classList.add("success");
+    } else {
+        feedback.classList.add("error");
+    }
+    feedback.classList.remove("hidden");
 }

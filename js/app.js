@@ -141,3 +141,10 @@ function updateSessionInfo(){
         sessionInfo.classList.add("hidden");
     }
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    console.log("DOM loaded");
+    showSection("welcome-section");
+})
+
+//Next is hunt selection

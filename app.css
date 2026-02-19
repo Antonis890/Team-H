@@ -1,0 +1,260 @@
+/* CSS file for app.html styling */
+/* General styles */
+body {
+    margin: 0;
+    font-family: 'Helvetica', sans-serif;
+    background-color: #F6F4FB;
+    color: #333;
+}
+
+/*.hidden {*/
+/*    display: none;*/
+/*}*/
+
+section {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(42, 22, 154, 0.08);
+}
+
+/* Header styles */
+.app-header {
+    position: relative;
+    background-color: #2A169A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 140px;
+    padding: 0 20px;
+}
+
+.app-header img {
+    max-width: 250px;
+    height: auto;
+}
+/* Session info inside header */
+.session-info {
+    display: flex;
+    gap: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #A7FC47;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.player-name,
+.current-score {
+    white-space: nowrap;
+}
+
+/* Main App Layout */
+.app-main {
+    max-width: 480px;
+    margin: 20px auto;
+    padding: 0 16px;
+}
+
+/* App Sections */
+.app-section {
+    display: none;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(42, 22, 154, 0.08);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.app-section.active {
+    display: block;
+}
+
+/* Section headers */
+.app-section h2,
+.app-section h3 {
+    color: #2A169A;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+/* Paragraphs */
+.app-section p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+/* Input fields */
+.app-input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    font-size: 16px;
+    border: 2px solid #2A169A;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+/* Buttons */
+.app-btn {
+    cursor: pointer;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 16px;
+    transition: transform 0.15s ease, background 0.25s ease;
+}
+
+.app-btn:active {
+    transform: scale(0.97);
+}
+
+.app-btn-primary {
+    background-color: #A7FC47;
+    color: #2A169A;
+    box-shadow: 0 4px 0 #7FD62E;
+}
+
+.app-btn-primary:active {
+    box-shadow: 0 2px 0 #7FD62E;
+}
+
+.app-btn-secondary {
+    background-color: #2A169A;
+    color: #A7FC47;
+    box-shadow: 0 4px 0 #1e0f7a;
+}
+
+.app-btn-secondary:active {
+    box-shadow: 0 2px 0 #1e0f7a;
+}
+
+/* Input groups */
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Hunt list */
+.hunt-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.loading-text {
+    font-style: italic;
+    color: #555;
+}
+
+/* Question section */
+.location-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.question-title {
+    font-weight: 700;
+    color: #2A169A;
+}
+
+.question-points {
+    font-weight: 700;
+    color: #A7FC47;
+}
+
+.question-text {
+    margin-bottom: 12px;
+}
+
+.question-image img {
+    max-width: 100%;
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+
+/* Answer area */
+.answer-area {
+    margin-bottom: 12px;
+}
+
+/* Feedback messages */
+.feedback-message {
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #d8000c;
+}
+
+/* Button group */
+.button-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Results section */
+.final-score-container,
+.leaderboard-section {
+    background: #f0f0f0;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.final-score-number {
+    font-size: 36px;
+    font-weight: 800;
+    color: #2A169A;
+}
+
+.leaderboard-display p {
+    margin: 6px 0;
+}
+
+/* Error section */
+.error-text {
+    color: #d8000c;
+}
+
+/* Responsive */
+@media screen and (max-width: 480px) {
+    .app-main {
+        padding: 0 12px;
+    }
+
+    .app-btn {
+        width: 100%;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .input-group input {
+        font-size: 14px;
+    }
+
+    .final-score-number {
+        font-size: 28px;
+    }
+
+    .app-header img {
+        max-width: 200px; /* немного меньше на маленьких экранах */
+    }
+}

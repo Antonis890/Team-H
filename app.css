@@ -17,6 +17,13 @@ section {
     box-shadow: 0 8px 20px rgba(42, 22, 154, 0.08);
 }
 
+.app-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 28px;
+    box-sizing: border-box;
+}
+
 /* Header styles */
 .app-header {
     position: relative;
@@ -29,20 +36,20 @@ section {
 }
 
 .app-header img {
-    max-width: 250px;
+    max-width: 300px;
     height: auto;
 }
 /* Session info inside header */
 .session-info {
     display: flex;
-    gap: 20px;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 20px;
     color: #A7FC47;
     position: absolute;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
+    gap: 24px;
 }
 
 .player-name,
@@ -52,9 +59,9 @@ section {
 
 /* Main App Layout */
 .app-main {
-    max-width: 480px;
-    margin: 20px auto;
-    padding: 0 16px;
+    max-width: 800px;
+    margin: 48px auto;
+    padding: 10px 28px;
 }
 
 /* App Sections */
@@ -63,8 +70,10 @@ section {
     background: white;
     border-radius: 16px;
     box-shadow: 0 8px 20px rgba(42, 22, 154, 0.08);
+
+    width: 100%;
+    margin: 20px 0;   
     padding: 20px;
-    margin-bottom: 20px;
 }
 
 .app-section.active {
@@ -81,7 +90,7 @@ section {
 
 /* Paragraphs */
 .app-section p {
-    font-size: 16px;
+    font-size: 20px;
     line-height: 1.5;
     margin-bottom: 12px;
 }
@@ -97,6 +106,14 @@ section {
     border-radius: 8px;
     box-sizing: border-box;
 }
+.input-group,
+.hunt-list {
+    margin-bottom: 24px;
+}
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+}
 
 /* Buttons */
 .app-btn {
@@ -107,6 +124,7 @@ section {
     padding: 12px 20px;
     font-size: 16px;
     transition: transform 0.15s ease, background 0.25s ease;
+
 }
 
 .app-btn:active {

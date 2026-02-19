@@ -97,19 +97,10 @@ section {
 
 #content p {
     font-size: 20px;
-    line-height: 1.7;
+    line-height: 1.4;
     font-weight: 500;
     color: #2A169A;
-}
-#content p::first-line {
-    font-weight: 700;
-    color: #2A169A;
-}
-
-#content p::first-letter {
-    font-size: 36px;
-    font-weight: 700;
-    color: #A7FC47;
+    margin: 0;
 }
 
 .title {
@@ -139,6 +130,13 @@ h2::before {
     border-radius: 2px;
 }
 
+.hero-line {
+    font-size: 26px;
+    font-weight: 700;
+    display: block;
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
 
 /* Button */
 #startButton {
@@ -234,3 +232,106 @@ input [type="text"]{
     font-size: 16px;
     border: 2px solid black;
 }
+
+/* footer */
+.footer {
+    width: 100%;
+    background: linear-gradient(135deg, #2A169A, #3A23C9);
+    color: white;
+    padding: 18px 18px 20px;
+    margin-top: 60px;
+}
+
+.footer-inner {
+    max-width: 480px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.footer-title {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    position: relative;
+    padding-left: 14px;
+    transform: translateY(-4px);
+}
+
+.footer-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 4px;
+    height: 100%;
+    background-color: #A7FC47;
+    border-radius: 2px;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.footer-links a {
+    flex: 1;
+    text-align: center;
+
+    padding: 12px 10px;
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.08);
+    color: #A7FC47;
+    text-decoration: none;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    border: 1px solid rgba(167, 252, 71, 0.35);
+
+    transition: background 0.25s ease, transform 0.15s ease;
+}
+
+
+.footer-links a:active {
+    transform: scale(0.97);
+}
+
+.footer-copy {
+    text-align: center;
+    font-size: 13px;
+    opacity: 0.75;
+    margin-top: 10px;
+}
+
+/* Mobile-friendly footer adjustments */
+@media (max-width: 600px) {
+    .footer-inner {
+        padding: 0 12px;
+    }
+
+    .footer-links a {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .footer-links {
+        gap: 8px;
+        justify-content: space-between;
+    }
+
+    .footer-links a:last-child {
+        margin-right: 12px;
+    }
+}
+@media (max-width: 400px) {
+    .footer-links {
+        flex-direction: column;
+    }
+}
+
+

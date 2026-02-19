@@ -250,8 +250,8 @@ section {
     color: #d8000c;
 }
 
-/* Responsive */
-@media screen and (max-width: 480px) {
+/* Mobile-friendly */
+@media screen and (max-width: 600px) {
     .app-main {
         padding: 0 12px;
     }
@@ -273,6 +273,63 @@ section {
     }
 
     .app-header img {
-        max-width: 200px;
+        max-width: 250px;
     }
 }
+
+@media screen and (max-width: 600px) {
+    .app-header {
+        position: relative;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 0 16px;
+        height: 100px;
+    }
+
+    .app-header img {
+        max-width: 250px;
+        height: auto;
+    }
+
+    .session-info {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        font-size: 16px;
+        white-space: nowrap;
+    }
+    .app-section {
+        margin: 24px auto 24px 16px;
+        padding: 16px;
+        border-radius: 14px;
+        box-sizing: border-box;
+        max-width: calc(100% - 32px);
+    }
+
+    .app-container {
+        padding: 0 16px 0 16px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .app-btn {
+        width: 100%;
+        padding: 10px 14px;
+    }
+    .input-group input {
+        font-size: 14px;
+
+    }
+    .app-input {
+        padding: 8px;
+    }
+}
+
+
+

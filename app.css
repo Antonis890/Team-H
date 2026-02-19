@@ -255,6 +255,6 @@ section {
     }
 
     .app-header img {
-        max-width: 200px; /* немного меньше на маленьких экранах */
+        max-width: 200px;
     }
 }

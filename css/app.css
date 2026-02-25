@@ -331,5 +331,29 @@ section {
     }
 }
 
+/* animation */
+.fly-in {
+    opacity: 0;
+    transform: translateX(-60px);
+}
+
+.fly-in.show {
+    animation: flyInLeft 0.6s ease-out forwards;
+}
+
+@keyframes flyInLeft {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+input [type="text"]{
+    padding: 10px;
+    margin: 5px;
+    font-size: 16px;
+    border: 2px solid black;
+}
+
 
 

@@ -89,6 +89,9 @@ body.menu-open .close-icon {
 body.menu-open .menu_icon {
     opacity: 0;
 }
+.menu-mobile {
+    display: none;
+}
 
 /* Adaptive menu for mobile */
 @media screen and (max-width: 600px) {
@@ -100,7 +103,7 @@ body.menu-open .menu_icon {
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: #F1F4FF;
+
         transform: translateX(100%);
         transition: transform 0.35s ease;
         z-index: 1000;
@@ -108,22 +111,22 @@ body.menu-open .menu_icon {
         display: flex;
         flex-direction: column;
         padding-top: 30px;
+
+        background-color: #F6F4FB;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        box-shadow: 0 -10px 30px rgba(42, 22, 154, 0.25);
     }
 
     .menu.responsive {
         transform: translateX(0);
     }
 
-    .menu a {
-        padding: 18px 24px;
-        font-size: 22px;
-        color: #2A169A;
-        text-decoration: none;
-
-        border-top: 3px solid rgba(42, 22, 154, 0.15);
-    }
     .menu a:last-child {
         border-bottom: 3px solid rgba(42, 22, 154, 0.15);
+    }
+    .menu a:active {
+        background: rgba(42, 22, 154, 0.08);
     }
     .icon{
         display: block;
@@ -133,6 +136,49 @@ body.menu-open .menu_icon {
         right: 20px;
         z-index: 2000;
         cursor: pointer;
+    }
+
+    .menu a {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 18px 24px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #2A169A;
+        text-decoration: none;
+
+        border-radius: 12px;
+        border: 2px solid rgba(42, 22, 154, 0.15);
+        margin: 8px 16px;
+        background: linear-gradient(120deg, #F6F4FB, #E8E5FF);
+        box-shadow: 0 4px 12px rgba(42, 22, 154, 0.12);
+
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+    }
+
+    .menu a .menu-icon {
+        font-size: 24px;
+    }
+    .menu a:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 6px rgba(42, 22, 154, 0.15);
+    }
+
+    .menu.responsive a {
+        opacity: 0;
+        transform: translateX(40px);
+        animation: slideIn 0.4s forwards;
+    }
+
+    .menu.responsive a:nth-child(1) { animation-delay: 0.05s; }
+    .menu.responsive a:nth-child(2) { animation-delay: 0.1s; }
+
+    @keyframes slideIn {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
     }
 }
 
@@ -394,4 +440,11 @@ ul li {
 .social-post.instagram { border-left: 6px solid #E1306C; }
 .social-post.x { border-left: 6px solid #000; }
 
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    overflow-x: hidden;
+}
 

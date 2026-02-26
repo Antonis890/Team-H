@@ -13,23 +13,19 @@ section {
     border-radius: 16px;
     box-shadow: 0 8px 20px rgba(42, 22, 154, 0.08);
 }
-.container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px 40px;
-    box-sizing: border-box;
-}
 
 /* Header styles */
 .header {
     position: relative;
+    height: 100px;
+
     background-color: #2A169A;
     color: #A7FC47;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    height: 100px;
     padding: 0 20px;
+
 }
 
 .header img {
@@ -48,41 +44,95 @@ section {
     font-size: 18px;
 }
 
-.menu a.icon {
-    display: none;
-}
-
 .menu_icon {
     fill: #A7FC47;
     display: block;
+    width: 40px;
+    height: 40px;
+
+}
+
+body.menu-open {
+    overflow: hidden;
+    touch-action: none;
+}
+.icon {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+.close-icon {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 32px;
+    font-weight: 700;
+    color: #A7FC47;
+
+    opacity: 0;
+    pointer-events: none;
+}
+
+body.menu-open .close-icon {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+body.menu-open .menu_icon {
+    opacity: 0;
 }
 
 /* Adaptive menu for mobile */
 @media screen and (max-width: 600px) {
-    .menu a:not(.icon) {
-        display: none;
-    }
-    .menu a.icon {
-        display: block;
-        position: absolute;
-        top: 35px;
-        right: 20px;
-        cursor: pointer;
-    }
-    .menu.responsive {
-        position: absolute;
+
+    .menu {
+        position: fixed;
+        inset: 0;
         top: 100px;
         left: 0;
-        width: 100%;
-        background-color: #2A169A;
+        right: 0;
+        bottom: 0;
+        background-color: #F1F4FF;
+        transform: translateX(100%);
+        transition: transform 0.35s ease;
         z-index: 1000;
+
         display: flex;
         flex-direction: column;
+        padding-top: 30px;
     }
-    .menu.responsive a:not(.icon) {
+
+    .menu.responsive {
+        transform: translateX(0);
+    }
+
+    .menu a {
+        padding: 18px 24px;
+        font-size: 22px;
+        color: #2A169A;
+        text-decoration: none;
+
+        border-top: 3px solid rgba(42, 22, 154, 0.15);
+    }
+    .menu a:last-child {
+        border-bottom: 3px solid rgba(42, 22, 154, 0.15);
+    }
+    .icon{
         display: block;
-        padding: 12px 20px;
-        text-align: left;
+        align-items: center;
+        justify-content: center;
+        top: 35px;
+        right: 20px;
+        z-index: 2000;
+        cursor: pointer;
     }
 }
 
@@ -178,28 +228,7 @@ ul li {
     display: block;
 }
 
-/* Links */
-.links a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: #2A169A;
-    color: #A7FC47;
-    text-decoration: none;
-
-    padding: 14px;
-    border-radius: 12px;
-    margin-bottom: 12px;
-
-    font-weight: bold;
-    font-size: 17px;
-
-    box-shadow: 0 6px 16px rgba(42, 22, 154, 0.25);
-}
-.links a:active {
-    transform: scale(0.97);
-}
+/* animation */
 
 .fly-in {
     opacity: 0;
@@ -224,13 +253,6 @@ ul li {
         border-radius: 14px;
         box-sizing: border-box;
     }
-}
-
-input [type="text"]{
-    padding: 10px;
-    margin: 5px;
-    font-size: 16px;
-    border: 2px solid black;
 }
 
 /* footer */
@@ -333,5 +355,43 @@ input [type="text"]{
         flex-direction: column;
     }
 }
+
+/* Social Media styling */
+
+.social-feed {
+    max-width: 800px;
+    margin: 48px auto;
+}
+
+.social-feed h2 {
+    margin-bottom: 24px;
+}
+
+.social-post {
+    display: block;
+    background: white;
+    padding: 18px 20px;
+    border-radius: 14px;
+    margin-bottom: 16px;
+    text-decoration: none;
+    color: #2A169A;
+
+    box-shadow: 0 6px 18px rgba(42, 22, 154, 0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.social-post:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(42, 22, 154, 0.18);
+}
+
+.social-post .platform {
+    font-weight: 800;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.social-post.instagram { border-left: 6px solid #E1306C; }
+.social-post.x { border-left: 6px solid #000; }
 
 

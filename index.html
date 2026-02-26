@@ -13,14 +13,17 @@
     <nav class="menu" id="menu">
         <a href="#help">Help</a>
         <a href="#about">About</a>
-        <a href="javascript:void(0);" class="icon" onclick="openMenu()">
-            <svg class="menu_icon" xmlns="http://www.w3.org/2000/svg" fill="white" x="0px" y="0px" width="40" height="40" viewBox="0 0 50 50">
-                <path d="M5 8 A2 2 0 1 0 5 12 L45 12 A2 2 0 1 0 45 8 L5 8 z
+
+    </nav>
+    <a href="javascript:void(0);" class="icon" onclick="openMenu()">
+        <svg class="menu_icon" xmlns="http://www.w3.org/2000/svg" fill="white" x="0px" y="0px" width="40" height="40" viewBox="0 0 50 50">
+            <path d="M5 8 A2 2 0 1 0 5 12 L45 12 A2 2 0 1 0 45 8 L5 8 z
                          M5 23 A2 2 0 1 0 5 27 L45 27 A2 2 0 1 0 45 23 L5 23 z
                          M5 38 A2 2 0 1 0 5 42 L45 42 A2 2 0 1 0 45 38 L5 38 z"></path>
-            </svg>
-        </a>
-    </nav>
+        </svg>
+
+        <span class="close-icon">✕</span>
+    </a>
 </header>
 
 <div id="content" class="fly-in">
@@ -75,6 +78,28 @@
     </ul>
 </section>
 
+<section class="social-feed fly-in">
+    <h2>Latest from Instagram</h2>
+
+    <blockquote class="instagram-media"
+                data-instgrm-permalink="https://www.instagram.com/p/DU8w4U4gjhk/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=="
+                data-instgrm-version="14">
+    </blockquote>
+</section>
+
+<script async src="https://www.instagram.com/embed.js"></script>
+
+<section class="social-feed fly-in">
+    <h2>Live Updates</h2>
+
+    <blockquote class="twitter-tweet">
+        <a href="https://twitter.com/TreasureHunt_H/status/2024551213690138781"></a>
+    </blockquote>
+</section>
+
+<script async src="https://platform.twitter.com/widgets.js"></script>
+
+
 <footer class="footer fly-in">
     <div class="footer-inner">
 
@@ -106,12 +131,10 @@
 <script>
     // Function to open burger menu
     function openMenu() {
-        var x = document.getElementById("menu");
-        if (x.className === "menu") {
-            x.className += " responsive";
-        } else {
-            x.className = "menu";
-        }
+        const menu = document.getElementById("menu");
+
+        menu.classList.toggle("responsive");
+        document.body.classList.toggle("menu-open");
     }
 
     // Scroll tracking for animation

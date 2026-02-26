@@ -39,22 +39,78 @@ section {
     max-width: 300px;
     height: auto;
 }
-/* Session info inside header */
+
+/* Player & Score Card  */
 .session-info {
     display: flex;
-    font-weight: bold;
-    font-size: 20px;
-    color: #A7FC47;
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    gap: 24px;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 50px auto -50px auto;
+    padding: 16px 28px;
+    box-sizing: border-box;
+    font-weight: 700;
+    font-size: 18px;
+    color: #1B1B1B;
+    text-align: center;
+
+    background: linear-gradient(135deg, #A7FC47, #7FD62E);
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: fadeInSlide 0.8s forwards;
+
+    position: relative;
 }
 
-.player-name,
+.player-name, .current-score {
+    font-size: 20px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    padding: 8px 16px;
+    border-radius: 12px;
+    transition: transform 0.3s ease, background 0.3s ease;
+    cursor: default;
+}
+
+.player-name:hover, .current-score:hover {
+    transform: scale(1.05);
+    background: rgba(255,255,255,0.15);
+}
+
+.player-name {
+    background: rgba(255,255,255,0.2);
+    color: #1B1B1B;
+}
+
 .current-score {
-    white-space: nowrap;
+    background: rgba(255,255,255,0.25);
+    color: #0F3D00;
+}
+
+@keyframes fadeInSlide {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .session-info {
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 16px;
+        width: 100%;
+        max-width: calc(100% - 32px);
+        margin: 16px auto 0 auto;
+    }
+
+    .player-name, .current-score {
+        width: 100%;
+        font-size: 18px;
+    }
 }
 
 /* Main App Layout */
@@ -66,6 +122,7 @@ section {
 
 /* App Sections */
 .app-section {
+    align-items: center;
     display: none;
     background: white;
     border-radius: 16px;
@@ -86,6 +143,24 @@ section {
     color: #2A169A;
     font-weight: 700;
     margin-bottom: 12px;
+}
+.welcome-title {
+    color: #2A169A;
+    font-size: 28px;
+    margin-bottom: 15px;
+    position: relative;
+    padding-left: 14px;
+}
+
+.welcome-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: -4px;
+    width: 4px;
+    height: calc(100% + 8px);
+    background-color: #A7FC47;
+    border-radius: 2px;
 }
 
 /* Paragraphs */
@@ -113,6 +188,9 @@ section {
 .input-group label {
     display: block;
     margin-bottom: 8px;
+    color: #2A169A;
+    font-size: 20px;
+    font-weight: 700;
 }
 
 /* Buttons */
@@ -254,6 +332,8 @@ section {
 @media screen and (max-width: 600px) {
     .app-main {
         padding: 0 12px;
+        margin-top: 20px;
+
     }
 
     .app-btn {
@@ -279,31 +359,40 @@ section {
 
 @media screen and (max-width: 600px) {
     .app-header {
-        position: relative;
         display: flex;
-        justify-content: flex-start;
+        justify-content: center;
         align-items: center;
-        padding: 0 16px;
         height: 100px;
+        padding: 0 16px;
+        position: relative;
     }
 
     .app-header img {
+        position: relative;
+        left: auto;
+        transform: none;
         max-width: 250px;
         height: auto;
     }
 
     .session-info {
-        position: absolute;
-        right: 16px;
-        top: 50%;
-        transform: translateY(-50%);
-        display: flex;
+        position: relative;
+        top: auto;
+        right: auto;
+        transform: none;
+        margin: 16px auto 0 auto;
         flex-direction: row;
-        align-items: center;
+        justify-content: center;
         gap: 12px;
-        font-size: 16px;
-        white-space: nowrap;
+        width: auto;
+        max-width: 300px;
     }
+
+    .player-name, .current-score {
+        font-size: 16px;
+        padding: 8px 12px;
+    }
+
     .app-section {
         margin: 24px auto 24px 16px;
         padding: 16px;
@@ -348,12 +437,51 @@ section {
     }
 }
 
-input [type="text"]{
+input[type="text"]{
     padding: 10px;
     margin: 5px;
     font-size: 16px;
     border: 2px solid black;
 }
 
+/* Loading overlay */
+#loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 9999;
+}
+
+#loadingOverlay.hidden {
+    display: none;
+}
+
+.loading-spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #2A169A;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 12px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#loadingOverlay p {
+    font-size: 18px;
+    color: #2A169A;
+    font-weight: bold;
+}
 
 

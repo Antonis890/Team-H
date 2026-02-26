@@ -176,8 +176,19 @@ function updateSessionInfo(){
 
 //Get the next question
 async function getQuestion(session){
-    const url = "question?session=" + session
-    return await callAPI(url);
+    const url = "question?session=" + session;
+    const data = await callAPI(url);
+    displayQuestion(data);
+    return data;
+}
+
+function displayQuestion(questionData) {
+    console.log("Question:", questionData);
+
+    document.getElementById("questionText").textContent =
+        questionData.questionText || "No question text";
+
+    showSection("question-section");
 }
 
 //Submit answer
@@ -185,6 +196,18 @@ async function submitAnswer(session, answer){
     const url = "answer?session=" + session + "&answer=" + answer;
     return await callAPI(url);
 }
+
+document.getElementById("submitAnswerBtn")
+    .addEventListener("click", async function () {
+        const input = document.getElementById("answerInput");
+        if (!input || !input.value) {
+            showFeedback("Enter an answer", false);
+            return;
+        }
+
+        await submitAnswer(appData.session, input.value);
+        await getQuestion(appData.session);
+    });
 
 //Skip question
 async function skipQuestion(session){
@@ -206,7 +229,7 @@ async function getLeaderboard(session){
 
 document.addEventListener("DOMContentLoaded", function() {
     console.log("DOM loaded");
-    document.getElementById("loadHuntBtn").addEventListener("click", loadTreasureHunts);
+    document.getElementById("loadHuntsBtn").addEventListener("click", loadTreasureHunts);
     showSection("welcome-section");
 })
 window.selectHunt = selectHunt;

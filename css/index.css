@@ -36,6 +36,7 @@ section {
     height: auto;
 }
 
+
 /* Styles for menu */
 .menu a {
     color: #A7FC47;
@@ -111,6 +112,7 @@ body.menu-open .menu_icon {
         display: flex;
         flex-direction: column;
         padding-top: 30px;
+
 
         background-color: #F6F4FB;
         border-top-left-radius: 20px;

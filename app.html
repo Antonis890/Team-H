@@ -33,7 +33,7 @@
                 <input type="text" id="playerNameInput" class="app-input" placeholder="Enter Player Name" required>
             </div>
 
-            <button id="loadHuntsBtn" class="app-btn app-btn-primary">Load Available Hunts</button>
+            <button id="loadHuntBtn" class="app-btn app-btn-primary">Load Available Hunts</button>
 
             <div id="huntSelection" class="hunt-selection hidden">
                 <h3>Select a Treasure Hunt:</h3>
@@ -78,10 +78,15 @@
     </section>
 
     <!--Results Section-->
+
     <section id="results-section" class="app-section">
         <div class="app-container">
             <h2>Hunt Complete!</h2>
-
+            <div class="button-group">
+                <button id="shareLocationBtn" class="app-btn app-btn-secondary" style="background-color: #4CAF50; color: white;">
+                    📍 Share Location
+                </button>
+            </div>
             <div id="finalScoreContainer" class="final-score-container">
                 <h3>Your Final Score</h3>
                 <p id="finalScore" class="final-score-number">0</p>

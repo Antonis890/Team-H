@@ -210,3 +210,49 @@ document.addEventListener("DOMContentLoaded", function() {
     showSection("welcome-section");
 })
 window.selectHunt = selectHunt;
+
+//Gets location
+
+async function shareMyLocation() {
+
+    if (!navigator.geolocation) {
+        showFeedback("Your browser doesn't support location :(", false);
+        return false;
+    }
+
+    showFeedback("Getting your location...", true);
+
+    try {
+
+        const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+                enableHighAccuracy: true,
+                timeout: 10000
+            });
+        });
+
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const url = `location?session=${appData.session}&latitude=${lat}&longitude=${lng}`;
+
+        await callAPI(url);
+        showFeedback("Location shared! Thanks!", true);
+        return true;
+
+    } catch (error) {
+
+        if (error.code === 1) {
+            showFeedback("Please allow location access to play", false);
+        } else if (error.code === 3) {
+            showFeedback("Location timed out ,try again", false);
+        } else {
+            showFeedback("Couldn't get location , Try again", false);
+        }
+        return false;
+    }
+}
+
+
+function needsLocation(question) {
+    return question && question['requires-location'] === true;
+}

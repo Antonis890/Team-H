@@ -75,10 +75,15 @@ function displayHuntList(hunts){
         const hunt = hunts[i];
         const huntCard = document.createElement("div");
         huntCard.className = "hunt-card";
-        huntCard.innerHTML =
-        "<h4>" + (hunt.name || hunt.description) + "</h4>" +
-        "<p>" + (hunt.description || "") + "</p>" +
-        "<button class='app-btn app-btn-primary' onclick='selectHunt(\"" + hunt.uuid + "\", \"" + hunt.name + "\")'>Start Hunt</button>";
+        huntCard.innerHTML = `
+    <div class="hunt-card-content">
+        <h4 class="hunt-title">${hunt.name || "Treasure Hunt"}</h4>
+        <p class="hunt-description">${hunt.description || "No description available"}</p>
+    </div>
+    <button class="app-btn app-btn-primary hunt-btn"
+        onclick='selectHunt("${hunt.uuid}", "${hunt.name}")'>
+        Start Hunt
+    </button>`;
         huntList.appendChild(huntCard);
     }
 }

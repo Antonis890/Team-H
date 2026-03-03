@@ -48,28 +48,30 @@
     <!--Question Section-->
     <section id="question-section" class="app-section">
         <div class="app-container">
-            <div id="locationStatus" class="location-status">
+            <!-- Location Status (hidden by default) -->
+            <div id="locationStatus" class="location-status hidden">
                 <span id="locationIcon">📍</span>
                 <span id="locationText">Retrieving location...</span>
             </div>
 
-            <div id="questionContainer">
+            <!--Question Container-->
+            <div id="questionContainer" class="hidden">
                 <div class="question-header">
                     <h2 id="questionTitle">Question</h2>
-                    <span id="questionScore" class="question-points"></span>
+                    <div class="question-progress">
+                        <span id="questionIndex"></span>
+                        <span id="questionType" class="question-type-badge"></span>
+                    </div>
                 </div>
 
                 <div id="questionText" class="question-text"></div>
-
+                <div id="skipInfo" class="skip-info hidden"></div>
+                <div id="locationInfo" class="location-info hidden"></div>
                 <div id="questionImage" class="question-image hidden"></div>
-
-                <!--Dynamic answer area-->
-                <div id="answerInputArea" class="answer-area">
-                    <!--js will inject code here-->
-                </div>
-
+                <div id="answerInputContainer" class="answer-area"></div>
                 <div id="feedback" class="feedback-message hidden"></div>
 
+                <!--Question Buttons-->
                 <div class="button-group">
                     <button id="submitAnswerBtn" class="app-btn app-btn-primary">Submit Answer</button>
                     <button id="skipQuestionBtn" class="app-btn app-btn-secondary">Skip Question</button>

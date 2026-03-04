@@ -533,15 +533,21 @@ input[type="text"]{
     border-radius: 16px;
     padding: 16px 16px;
     box-shadow: 0 6px 18px rgba(42, 22, 154, 0.08);
-    margin-top: 16px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
+    max-width: 1000px;
+    margin: 20px auto 0 auto;
     box-sizing: border-box;
     border: 2px solid #D0D0D0;
 
     opacity: 0;
     transform: translateY(10px);
     animation: fadeInUpMobile 0.4s forwards;
+}
+#question-section {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
 }
 
 /* Question Header */
@@ -567,7 +573,7 @@ input[type="text"]{
     padding: 4px 10px;
     border-radius: 12px;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 12px;
     white-space: nowrap;
     text-align: right;
 }
@@ -729,4 +735,32 @@ input[type="text"]{
         margin-top: 6px;
         margin-bottom: 8px;
     }
+}
+/* Location */
+#locationStatus {
+    background: white;
+    border-radius: 14px;
+    padding: 10px 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    font-size: 14px;
+}
+.location-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 28px;
+    box-sizing: border-box;
+    display: none;
+}
+#question-section:has(#locationInfo:not(.hidden)) .location-container {
+    display: block;
+    animation: fadeInLocation 0.3s ease forwards;
+}
+.location-container.active {
+    display: block;
+    animation: fadeInLocation 0.3s ease forwards;
+}
+
+@keyframes fadeInLocation {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }

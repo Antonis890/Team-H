@@ -46,36 +46,36 @@
     </section>
 
     <!--Question Section-->
-    <section id="question-section" class="app-section">
-        <div class="app-container">
+    <section id="question-section" class="question-section">
+        <div class="location-container">
             <!-- Location Status (hidden by default) -->
             <div id="locationStatus" class="location-status hidden">
                 <span id="locationIcon">📍</span>
                 <span id="locationText">Retrieving location...</span>
             </div>
+        </div>
 
             <!--Question Container-->
-            <div id="questionContainer" class="hidden">
-                <div class="question-header">
-                    <div class="question-progress">
-                        <span id="questionIndex"></span>
-                    </div>
-                    <div id="questionType" class="question-type-badge"></div>
+        <div id="questionContainer" class="hidden">
+            <div class="question-header">
+                <div class="question-progress">
+                    <span id="questionIndex"></span>
                 </div>
-                <h2 id="questionTitle">Question</h2>
+                <div id="questionType" class="question-type-badge"></div>
+            </div>
+            <h2 id="questionTitle">Question</h2>
 
-                <div id="questionText" class="question-text"></div>
-                <div id="skipInfo" class="skip-info hidden"></div>
-                <div id="locationInfo" class="location-info hidden"></div>
-                <div id="questionImage" class="question-image hidden"></div>
-                <div id="answerInputContainer" class="answer-area"></div>
-                <div id="feedback" class="feedback-message hidden"></div>
+            <div id="questionText" class="question-text"></div>
+            <div id="skipInfo" class="skip-info hidden"></div>
+            <div id="locationInfo" class="location-info hidden"></div>
+            <div id="questionImage" class="question-image hidden"></div>
+            <div id="answerInputContainer" class="answer-area"></div>
+            <div id="feedback" class="feedback-message hidden"></div>
 
-                <!--Question Buttons-->
-                <div class="button-group">
-                    <button id="submitAnswerBtn" class="app-btn app-btn-primary">Submit Answer</button>
-                    <button id="skipQuestionBtn" class="app-btn app-btn-secondary">Skip Question</button>
-                </div>
+            <!--Question Buttons-->
+            <div class="button-group">
+                <button id="submitAnswerBtn" class="app-btn app-btn-primary">Submit Answer</button>
+                <button id="skipQuestionBtn" class="app-btn app-btn-secondary">Skip Question</button>
             </div>
         </div>
     </section>

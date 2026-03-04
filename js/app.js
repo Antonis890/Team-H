@@ -295,7 +295,7 @@ async function getQuestion(session){
     // Check if the game is finished
     if (data.status === "FINISHED" || data.completed) {
         showFeedback("Treasure hunt completed!", true);
-        showSection("leaderboard-section");
+        showSection("results-section");
         await displayLeaderboard();
         return null;
     }
@@ -310,12 +310,50 @@ async function submitAnswer(session, answer){
     return await callAPI(url);
 }
 
-//Skip question
-async function skipQuestion(session){
-    const url = "skip?session=" + session;
-    return await callAPI(url);
+// Handle skip response
+function handleSkipResponse(data) {
+    // Update score (skip usually has penalty)
+    if (data.scoreAdjustment) {
+        appData.score += data.scoreAdjustment;
+        updateSessionInfo();
+    }
+
+    showFeedback("⏭️ Question skipped! " + data.scoreAdjustment + " points", false);
+
+    // Check if treasure hunt is completed after skipping
+    if (data.completed) {
+        showFeedback("Treasure hunt completed!", true);
+        setTimeout(() => {
+            showSection("results-section");
+            displayLeaderboard();
+        }, 2000);
+    } else {
+        // Load next question
+        setTimeout(() => {
+            getQuestion(appData.session);
+        }, 1500);
+    }
 }
 
+//Skip question
+async function skipQuestion(session) {
+    // Check if question can be skipped
+    if (currentQuestionData && !currentQuestionData.canBeSkipped) {
+        showFeedback("This question cannot be skipped", false);
+        return null;
+    }
+
+    const url = "skip?session=" + session;
+
+    try {
+        const data = await callAPI(url);
+        handleSkipResponse(data);
+        return data;
+    } catch (error) {
+        showFeedback("Error skipping question: " + error.message, false);
+        throw error;
+    }
+}
 //Get current score
 async function getScore(session){
     const url = "score?session=" + session;
@@ -332,6 +370,9 @@ document.addEventListener("DOMContentLoaded", function() {
     console.log("DOM loaded");
     document.getElementById("loadHuntBtn").addEventListener("click", loadTreasureHunts);
     showSection("welcome-section");
+    document.getElementById("skipQuestionBtn").addEventListener("click", function () {
+        skipQuestion(appData.session);
+    });
 })
 window.selectHunt = selectHunt;
 

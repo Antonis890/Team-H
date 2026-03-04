@@ -559,11 +559,10 @@ input[type="text"]{
 }
 
 .question-progress {
-    font-size: 14px;
+    font-size: 12px;
     color: #525252;
     text-align: left;
     white-space: nowrap;
-    font-weight: 700;
     margin-top: 5px;
 }
 
@@ -571,9 +570,8 @@ input[type="text"]{
     background: #A7FC47;
     color: #2A169A;
     padding: 4px 10px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 12px;
+    border-radius: 10px;
+    font-size: 10px;
     white-space: nowrap;
     text-align: right;
 }

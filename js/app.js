@@ -1,66 +1,77 @@
 //API SECTION
 const API_LINK="https://codecyprus.org/th/api";
 const APP_NAME = "webapp";
+const LOCATION_COOLDOWN = 0;
 
 //STORE APP DATA
 const appData = {
     session: null,
     playerName: null,
     currentHunt: null,
+    currentQuestion: null,
+    myLocation: { latitude: null, longitude: null },
     score: 0,
     isPlaying: false
 };
-// Store current question data
-let currentQuestionData = null;
 
-// Format question type for display
-function formatQuestionType(type) {
-    switch(type) {
-        case "BOOLEAN": return "True/False";
-        case "INTEGER": return "Whole Number";
-        case "NUMERIC": return "Decimal Number";
-        case "MCQ": return "Multiple Choice (A, B, C, D)";
-        case "TEXT": return "Text Answer";
-        default: return type;
-    }
-}
+let lastLocationUpdate = 0;
+let qrScanner = null;
 
 //API FUNCTIONS
 
 //Call the API
-async function callAPI(endpoint) {
-    try {
-        const url = API_LINK + "/" + endpoint;
-        const response = await fetch(url);
-        const data = await response.json();
-
-        console.log("API RESPONSE:", data);
-
-        //Check for errors
-        if (data.status === "ERROR") {
-            throw new Error(data.errorMessages);
-        }
-        return data;
-    } catch (error) {
-        console.error("API Error: ", error);
-        throw error;
-    }
+function callAPI(endpoint) {
+    return fetch(API_LINK + "/" + endpoint)
+        .then(function(response) {return response.json();})
+        .then(function(data) {
+            if (data.status === "ERROR") throw new Error(data.errorMessages);
+            return data;
+    });
 }
 
 //Get all available treasure hunts
-async function getTreasureHunts(){
-    const url = "list"
-    return await callAPI(url);
+function getTreasureHunts(){
+    let url = "list";
+    return callAPI(url);
 }
 
 //Start a game session
-async function startSession(playerName, huntId){
-    const url = "start?player=" + playerName + "&app=" + APP_NAME + "&treasure-hunt-id=" + huntId;
-    return await callAPI(url);
+function startSession(playerName, huntId){
+    let url = "start?player=" + encodeURIComponent(playerName) + "&app=" + APP_NAME + "&treasure-hunt-id=" + huntId;
+    return callAPI(url);
 }
 
-//Hunt selection
-async function loadTreasureHunts(){
+function getQuestion(session){
+    let url = "question?session=" + session;
+    return callAPI(url);
+}
+
+function submitAnswer(session, answer){
+    let url = "answer?session=" + session + "&answer=" + encodeURIComponent(answer);
+    if(appData.myLocation.latitude && appData.myLocation.longitude){
+        url += "&latitude=" + appData.myLocation.latitude + "&longitude=" + appData.myLocation.longitude;
+    }
+    return callAPI(url);
+}
+
+function skipQuestion(session){
+    let url = "skip?session=" + session;
+    return callAPI(url);
+}
+
+function getScore(session){
+    let url = "score?session=" + session;
+    return callAPI(url);
+}
+function getLeaderboard(session){
+    let url = "leaderboard?session=" + session;
+    return callAPI(url);
+}
+
+//GEOLOCATION
+
+//HUNT SELECTION
+function loadTreasureHunts(){
     const playerName = document.getElementById("playerNameInput").value.trim();
     if (!playerName){
        showFeedback("Please enter your name", false);
@@ -68,16 +79,18 @@ async function loadTreasureHunts(){
     }
     appData.playerName = playerName;
     showLoading(true);
-    try {
-        const data = await getTreasureHunts();
-        const hunts = data.treasureHunts || data;
-        displayHuntList(hunts);
-        document.getElementById("huntSelection").classList.remove("hidden");
-    } catch (error) {
-        showError("Could not load treasure hunts");
-    } finally {
-        showLoading(false);
-    }
+
+    getTreasureHunts()
+        .then(function(data){
+            displayHuntList(data.treasurehunts);
+            document.getElementById("huntSelection").classList.remove("hidden");
+        })
+        .catch(function(){
+            showError("Could not load treasure hunts");
+        })
+        .finally(function(){
+            showLoading(false);
+        })
 }
 
 function displayHuntList(hunts){
@@ -91,159 +104,37 @@ function displayHuntList(hunts){
         const hunt = hunts[i];
         const huntCard = document.createElement("div");
         huntCard.className = "hunt-card";
-        huntCard.innerHTML = `
-    <div class="hunt-card-content">
-        <h4 class="hunt-title">${hunt.name || "Treasure Hunt"}</h4>
-        <p class="hunt-description">${hunt.description || "No description available"}</p>
-    </div>
-    <button class="app-btn app-btn-primary hunt-btn"
-        onclick='selectHunt("${hunt.uuid}", "${hunt.name}")'>
-        Start Hunt
-    </button>`;
+        huntCard.innerHTML =
+            "<div class='hunt-card-content'>" +
+            "<h4 class='hunt-title'>" + (hunt.name || "Treasure Hunt") + "</h4>" +
+            "<p class='hunt-description'>" + (hunt.description || "No description available") + "</p>" +
+            "</div>" +
+            "<button class='app-btn app-btn-primary hunt-btn'" +
+            " onclick='selectHunt(\"" + hunt.uuid + "\", \"" + hunt.name + "\")'>Start Hunt</button>";
         huntList.appendChild(huntCard);
     }
 }
 
-async function selectHunt(huntId, huntName){
+function selectHunt(huntId, huntName){
     showLoading(true);
-    try {
-        const data = await startSession(appData.playerName, huntId);
-        if (data.session){
+
+    startSession(appdata.playerName, huntId)
+        .then(function(data){
+            if(!data.session)throw new Error("Could not start session");
             appData.session = data.session;
-            appData.currentHunt = {id:huntId, name: huntName};
+            appData.currentHunt = { id: huntId, name: huntName};
             appData.isPlaying = true;
             updateSessionInfo();
-            showSection("question-section");
-            await getQuestion(appData.session);
-        } else {
-            throw new Error("Could not start session");
-        }
-    } catch (error) {
-        showError("Could not start hunt: " + error.message);
-    } finally {
+        })
+        .catch(function(error){
+            showError("Could not start hunt: " + error.message);
+        })
+        .finally(function(){
         showLoading(false);
-    }
+    })
 }
 
-//SCREEN FUNCTIONS
-
-//Show specific sections
-function showSection(sectionId){
-    //hide all
-    const sections = document.querySelectorAll(".app-section");
-    for (let i = 0; i < sections.length; i++) {
-        sections[i].classList.remove("active");
-    }
-
-    //show the target section
-    const targetSection = document.getElementById(sectionId);
-    if (targetSection){
-        targetSection.classList.add("active");
-    }
-}
-
-//Show or hide loading spinner
-function showLoading(show){
-    const overlay = document.getElementById("loadingOverlay");
-    if (show){
-        overlay.classList.remove("hidden");
-    } else{
-        overlay.classList.add("hidden");
-    }
-}
-
-//Show an error message
-function showError(message){
-    document.getElementById("errorMessage").textContent = message;
-    showSection("error-section");
-}
-
-//Show feedback message
-function showFeedback(message, isSuccess){
-    const feedback = document.getElementById("feedback");
-    if (!feedback) {
-        return;
-    }
-    feedback.textContent = message;
-
-    //Remove old classes
-    feedback.classList.remove("success");
-    feedback.classList.remove("error");
-
-    //Add new class
-    if (isSuccess){
-        feedback.classList.add("success");
-    } else {
-        feedback.classList.add("error");
-    }
-    feedback.classList.remove("hidden");
-    setTimeout(function(){
-        feedback.classList.add("hidden");
-    }, 3000);
-}
-
-//Update session info in the header
-function updateSessionInfo(){
-    const sessionInfo = document.getElementById("sessionInfo");
-    const playerNameInfo = document.getElementById("playerName");
-    const scoreInfo = document.getElementById("currentScore");
-
-    if (appData.session) {
-        sessionInfo.classList.remove("hidden");
-        playerNameInfo.textContent = appData.playerName;
-        scoreInfo.textContent = "Score: " + appData.score;
-    } else {
-        sessionInfo.classList.add("hidden");
-    }
-}
-
-// Create appropriate answer input based on question type
-function createAnswerInput(questionType) {
-    const container = document.getElementById("answerInputContainer");
-    let html = "";
-
-    switch(questionType) {
-        case "BOOLEAN":
-            html = `
-                <select id="answerInput" class="app-input">
-                    <option value="">Select answer...</option>
-                    <option value="true">True</option>
-                    <option value="false">False</option>
-                </select>`;
-            break;
-
-        case "MCQ":
-            html = `
-                <select id="answerInput" class="app-input">
-                    <option value="">Select answer...</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                </select>`;
-            break;
-
-        case "INTEGER":
-        case "NUMERIC":
-            html = `<input type="number" id="answerInput" class="app-input"
-                        step="${questionType === "INTEGER" ? 1 : "any"}"
-                        placeholder="Enter your answer">`;
-            break;
-
-        case "TEXT":
-        default:
-            html = `<input type="text" id="answerInput" class="app-input"
-                        placeholder="Enter your answer">`;
-    }
-
-    container.innerHTML = html;
-}
-
-// Display leaderboard
-async function displayLeaderboard() {
-
-}
-
+//QUESTIONS
 //Display question in the UI
 function displayQuestion(questionData) {
     const questionContainer = document.getElementById("questionContainer");
@@ -304,12 +195,6 @@ async function getQuestion(session){
     return data;
 }
 
-//Submit answer
-async function submitAnswer(session, answer){
-    const url = "answer?session=" + session + "&answer=" + answer;
-    return await callAPI(url);
-}
-
 // Handle skip response
 function handleSkipResponse(data) {
     // Update score (skip usually has penalty)
@@ -354,25 +239,147 @@ async function skipQuestion(session) {
         throw error;
     }
 }
-//Get current score
-async function getScore(session){
-    const url = "score?session=" + session;
-    return await callAPI(url);
+
+// Create appropriate answer input based on question type
+function createAnswerInput(questionType) {
+    const container = document.getElementById("answerInputContainer");
+    let html = "";
+
+    switch(questionType) {
+        case "BOOLEAN":
+            html = `
+                <select id="answerInput" class="app-input">
+                    <option value="">Select answer...</option>
+                    <option value="true">True</option>
+                    <option value="false">False</option>
+                </select>`;
+            break;
+
+        case "MCQ":
+            html = `
+                <select id="answerInput" class="app-input">
+                    <option value="">Select answer...</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>`;
+            break;
+
+        case "INTEGER":
+        case "NUMERIC":
+            html = `<input type="number" id="answerInput" class="app-input"
+                        step="${questionType === "INTEGER" ? 1 : "any"}"
+                        placeholder="Enter your answer">`;
+            break;
+
+        case "TEXT":
+        default:
+            html = `<input type="text" id="answerInput" class="app-input"
+                        placeholder="Enter your answer">`;
+    }
+
+    container.innerHTML = html;
 }
 
-//Get leaderboard
-async function getLeaderboard(session){
-    const url = "leaderboard?session=" + session;
-    return await callAPI(url);
-}
+//ANSWER SUBMISSION
 
-document.addEventListener("DOMContentLoaded", function() {
-    console.log("DOM loaded");
-    document.getElementById("loadHuntBtn").addEventListener("click", loadTreasureHunts);
+
+//FINISH
+
+
+//RESET
+function resetApp(){
+    lastLocationUpdate = 0;
+    appData.session = null;
+    appData.currentHunt= null;
+    appData.currentQuestion = null;
+    appData.score = 0;
+    appData.isPlaying = false;
+    appData.myLocation.latitude = null;
+    appData.myLocation.longitude = null;
+    window.selectedAnswer = null;
+
+    document.getElementById("playerNameInput").value = appData.playerName || "";
+    document.getElementById("huntSelection").classList.add("hidden");
+    updateSessionInfo();
     showSection("welcome-section");
-    document.getElementById("skipQuestionBtn").addEventListener("click", function () {
-        skipQuestion(appData.session);
-    });
+}
+
+//HELPER FUNCTIONS
+
+//Show specific sections
+function showSection(sectionId){
+    //hide all
+    const sections = document.querySelectorAll(".app-section");
+    for (let i = 0; i < sections.length; i++) {
+        sections[i].classList.remove("active");
+    }
+    //show the target section
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection){
+        targetSection.classList.add("active");
+    }
+}
+
+//Show or hide loading spinner
+function showLoading(show){
+    const overlay = document.getElementById("loadingOverlay");
+    if (show){
+        overlay.classList.remove("hidden");
+    } else{
+        overlay.classList.add("hidden");
+    }
+}
+
+//Show an error message
+function showError(message){
+    document.getElementById("errorMessage").textContent = message;
+    showSection("error-section");
+}
+
+//Show feedback message
+function showFeedback(message, isSuccess){
+    const feedback = document.getElementById("feedback");
+    if (!feedback) {
+        return;
+    }
+    feedback.textContent = message;
+    //Remove old classes
+    feedback.classList.remove("success", "error", "hidden");
+    //Add new class
+    if (isSuccess){
+        feedback.classList.add("success");
+    } else {
+        feedback.classList.add("error");
+    }
+    setTimeout(function(){
+        feedback.classList.add("hidden");
+    }, 3000);
+}
+
+//Update session info in the header
+function updateSessionInfo(){
+    const sessionInfo = document.getElementById("sessionInfo");
+    const playerNameInfo = document.getElementById("playerName");
+    const scoreInfo = document.getElementById("currentScore");
+
+    if (appData.session) {
+        sessionInfo.classList.remove("hidden");
+        playerNameInfo.textContent = appData.playerName;
+        scoreInfo.textContent = "Score: " + appData.score;
+    } else {
+        sessionInfo.classList.add("hidden");
+    }
+}
+
+//INNIT
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("loadHuntBtn").addEventListener("click", loadTreasureHunts);
+    document.getElementById("playAgainBtn").addEventListener("click", resetApp);
+    document.getElementById("returnHomeBtn").addEventListener("click", resetApp);
+    showSection("welcome-section");
 })
+
 window.selectHunt = selectHunt;
 

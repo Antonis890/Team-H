@@ -8,7 +8,7 @@ body {
 }
 
 .hidden {
-    display: none;
+    display: none; !important;
 }
 
 section {
@@ -18,7 +18,7 @@ section {
 }
 
 .app-container {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 0 28px;
     box-sizing: border-box;
@@ -46,7 +46,7 @@ section {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 800px;
+    max-width: 900px;
     margin: 50px auto -50px auto;
     padding: 16px 28px;
     box-sizing: border-box;
@@ -115,7 +115,7 @@ section {
 
 /* Main App Layout */
 .app-main {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 48px auto;
     padding: 10px 28px;
 }

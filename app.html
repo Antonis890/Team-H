@@ -13,7 +13,6 @@
 <header class="app-header">
     <div class="app-header-content">
         <img src= "media/teamH.png" alt= "logo">
-<!--        <h1>Treasure Hunt</h1>-->
     </div>
 </header>
 
@@ -46,7 +45,7 @@
     </section>
 
     <!--Question Section-->
-    <section id="question-section" class="question-section">
+    <section id="question-section" class="app-section">
         <div class="location-container">
             <!-- Location Status (hidden by default) -->
             <div id="locationStatus" class="location-status hidden">
@@ -63,10 +62,12 @@
                 </div>
                 <div id="questionType" class="question-type-badge"></div>
             </div>
+
             <h2 id="questionTitle">Question</h2>
 
             <div id="questionText" class="question-text"></div>
             <div id="skipInfo" class="skip-info hidden"></div>
+
             <div id="locationInfo" class="location-info hidden"></div>
             <div id="questionImage" class="question-image hidden"></div>
             <div id="answerInputContainer" class="answer-area"></div>
@@ -116,6 +117,25 @@
     <div class="loading-spinner"></div>
     <p>Loading...</p>
 </div>
+
+<button id="qr-icon" class="active" onclick="" aria-label="Scan QR Code">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 100 100" fill="currentColor">
+        <!--Top left square-->
+        <rect x="5" y="5" width="30" height="30" rx="4" fill="none" stroke="currentColor" stroke-width="7"/>
+        <rect x="15" y="15" width="10" height="10"/>
+        <!--Top right square-->
+        <rect x="65" y="5" width="30" height="30" rx="4" fill="none" stroke="currentColor" stroke-width="7"/>
+        <rect x="75" y="15" width="10" height="10"/>
+        <!--Bottom left square-->
+        <rect x="5" y="65" width="30" height="30" rx="4" fill="none" stroke="currentColor" stroke-width="7"/>
+        <rect x="15" y="75" width="10" height="10"/>
+        <!--Dots on the right side-->
+        <rect x="65" y="65" width="8" height="8"/>
+        <rect x="78" y="65" width="8" height="8"/>
+        <rect x="65" y="78" width="8" height="8"/>
+        <rect x="78" y="78" width="8" height="8"/>
+    </svg>
+</button>
 
 <script src="js/app.js"></script>
 </body>

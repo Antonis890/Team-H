@@ -118,7 +118,7 @@ function displayHuntList(hunts){
 function selectHunt(huntId, huntName){
     showLoading(true);
 
-    startSession(appdata.playerName, huntId)
+    startSession(appData.playerName, huntId)
         .then(function(data){
             if(!data.session)throw new Error("Could not start session");
             appData.session = data.session;

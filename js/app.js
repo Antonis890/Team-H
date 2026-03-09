@@ -142,7 +142,7 @@ function showLocationStatus(message,isSuccess){
     const locationText = document.getElementById("locationText");
     const locationIcon = document.getElementById("locationIcon");
     if(locationText) locationText.textContent = message;
-    if(locationText)locationText.textContent = messageisSuccess? "📍":"❌";
+    if(locationIcon)locationIcon.textContent = isSuccess? "📍":"❌";
 
 }
 //HUNT SELECTION

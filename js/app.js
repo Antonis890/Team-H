@@ -41,9 +41,24 @@ function startSession(playerName, huntId){
     return callAPI(url);
 }
 
+//Get the next question
 function getQuestion(session){
     let url = "question?session=" + session;
-    return callAPI(url);
+    return callAPI(url)
+        .then(function(data){
+            // Check if the game is finished
+            if (data.status === "FINISHED" || data.completed) {
+                showFeedback("Treasure hunt completed!", true);
+                showSection("results-section");
+                displayLeaderboard();
+                return null;
+            }
+
+            appData.currentQuestion = data;
+            displayQuestion(data);
+            return data;
+        });
+
 }
 
 function submitAnswer(session, answer){
@@ -54,9 +69,25 @@ function submitAnswer(session, answer){
     return callAPI(url);
 }
 
+//Skip question
 function skipQuestion(session){
-    let url = "skip?session=" + session;
-    return callAPI(url);
+    // Check if question can be skipped
+    if (appData.currentQuestion && !appData.currentQuestion.canBeSkipped) {
+        showFeedback("This question cannot be skipped", false);
+        return null;
+    }
+
+    const url = "skip?session=" + session;
+
+    return callAPI(url)
+        .then(function(data) {
+            handleSkipResponse(data);
+            return data;
+        })
+        .catch(function(error) {
+            showFeedback("Error skipping question: " + error.message, false);
+            throw error;
+        });
 }
 
 function getScore(session){
@@ -120,7 +151,7 @@ function loadTreasureHunts(){
 
     getTreasureHunts()
         .then(function(data){
-            displayHuntList(data.treasurehunts);
+            displayHuntList(data.treasureHunts);
             document.getElementById("huntSelection").classList.remove("hidden");
         })
         .catch(function(){
@@ -163,6 +194,9 @@ function selectHunt(huntId, huntName){
             appData.currentHunt = { id: huntId, name: huntName};
             appData.isPlaying = true;
             updateSessionInfo();
+
+            showSection("question-section");
+            return getQuestion(appData.session);
         })
         .catch(function(error){
             showError("Could not start hunt: " + error.message);
@@ -187,7 +221,24 @@ function displayQuestion(questionData) {
 
     // Display question type
     document.getElementById("questionType").textContent =
-        `Type: ${formatQuestionType(questionData.questionType)}`;
+        "Type: " + questionData.questionType;
+
+
+    const skipBtn = document.getElementById("skipQuestionBtn");
+    if (skipBtn) {
+        skipBtn.disabled = false;
+
+        skipBtn.onclick = function() {
+            if (!questionData.canBeSkipped) {
+                showFeedback("This question cannot be skipped", false);
+                return;
+            }
+            skipQuestion(appData.session)
+                .catch(err => {
+                    showFeedback("Error skipping question: " + err.message, false);
+                });
+        };
+    }
 
     // Show if question can be skipped
     const skipInfo = document.getElementById("skipInfo");
@@ -216,23 +267,6 @@ function displayQuestion(questionData) {
     questionContainer.classList.remove("hidden");
 }
 
-//Get the next question
-async function getQuestion(session){
-    const url = "question?session=" + session
-    const data = await callAPI(url);
-
-    // Check if the game is finished
-    if (data.status === "FINISHED" || data.completed) {
-        showFeedback("Treasure hunt completed!", true);
-        showSection("results-section");
-        await displayLeaderboard();
-        return null;
-    }
-    currentQuestionData = data;
-    displayQuestion(data);
-    return data;
-}
-
 // Handle skip response
 function handleSkipResponse(data) {
     // Update score (skip usually has penalty)
@@ -255,26 +289,6 @@ function handleSkipResponse(data) {
         setTimeout(() => {
             getQuestion(appData.session);
         }, 1500);
-    }
-}
-
-//Skip question
-async function skipQuestion(session) {
-    // Check if question can be skipped
-    if (currentQuestionData && !currentQuestionData.canBeSkipped) {
-        showFeedback("This question cannot be skipped", false);
-        return null;
-    }
-
-    const url = "skip?session=" + session;
-
-    try {
-        const data = await callAPI(url);
-        handleSkipResponse(data);
-        return data;
-    } catch (error) {
-        showFeedback("Error skipping question: " + error.message, false);
-        throw error;
     }
 }
 

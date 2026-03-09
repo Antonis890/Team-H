@@ -87,6 +87,26 @@ function requestLocationPermision(){
     }
     );
 }
+function tryUpdateLocation(){
+    if(!navigator.geolocation)return;
+    let now = Date.now();
+if(now-lastLocationUpdate > LOCATION_COOLDOWN){
+    console.log("Location cooldown active using active cordinbates");
+    return;
+}
+navigator.geolocation.getCurrentPosition(function(position) {
+    appData.myLocation.latitude = position.coords.latitude;
+    appData.myLocation.longitude = position.coords.longitude;
+    lastLocationUpdate = Date.now();
+    showLocationStatus("Location updated", true);
+},
+    function(){
+    showLocationStatus("Location unavailable",false);
+
+
+}
+);
+}
 
 //HUNT SELECTION
 function loadTreasureHunts(){

@@ -69,6 +69,24 @@ function getLeaderboard(session){
 }
 
 //GEOLOCATION
+function requestLocationPermision(){
+    if(!navigator.geolocation){
+        showFeedback("Geolocation is not supported on this device",false)
+        return
+    }
+    navigator.geolocation.getCurrentPosition(function(position) {
+        appData.myLocation.latitude = position.coords.latitude;
+        appData.myLocation.longitude = position.coords.longitude;
+        lastLocationUpdate = Date.now();
+        console.log("Location granted:", appData.myLocation);
+
+    },
+    function (error){
+        console.error("Location error:",error);
+        showFeedback("Location access denied some questions may not work correctly",false);
+    }
+    );
+}
 
 //HUNT SELECTION
 function loadTreasureHunts(){

@@ -107,7 +107,13 @@ navigator.geolocation.getCurrentPosition(function(position) {
 }
 );
 }
+function showLocationStatus(message,isSuccess){
+    const locationText = document.getElementById("locationText");
+    const locationIcon = document.getElementById("locationIcon");
+    if(locationText) locationText.textContent = message;
+    if(locationText)locationText.textContent = messageisSuccess? "📍":"❌";
 
+}
 //HUNT SELECTION
 function loadTreasureHunts(){
     const playerName = document.getElementById("playerNameInput").value.trim();

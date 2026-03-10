@@ -51,10 +51,10 @@ function getQuestion(session){
     return callAPI(url)
         .then(function(data){
             // Check if the game is finished
-            if (data.status === "FINISHED" || data.completed) {
+            if (data.completed) {
                 showFeedback("Treasure hunt completed!", true);
                 showSection("results-section");
-                displayLeaderboard();
+                getLeaderboard(session);
                 return null;
             }
 
@@ -65,20 +65,12 @@ function getQuestion(session){
 
 }
 
-function submitAnswer(session, answer){
-    let url = "answer?session=" + session + "&answer=" + encodeURIComponent(answer);
-    if(appData.myLocation.latitude && appData.myLocation.longitude){
-        url += "&latitude=" + appData.myLocation.latitude + "&longitude=" + appData.myLocation.longitude;
-    }
-    return callAPI(url);
-}
-
 //Skip question
 function skipQuestion(session){
     // Check if question can be skipped
     if (appData.currentQuestion && !appData.currentQuestion.canBeSkipped) {
         showFeedback("This question cannot be skipped", false);
-        return null;
+        return Promise.reject("Cannot skip");
     }
 
     const url = "skip?session=" + session;
@@ -297,20 +289,20 @@ function displayQuestion(questionData) {
 
 // Handle skip response
 function handleSkipResponse(data) {
-    // Update score (skip usually has penalty)
-    if (data.scoreAdjustment) {
-        appData.score += data.scoreAdjustment;
+    // Update score by fetching from API
+    getScore(appData.session).then(scoreData => {
+        appData.score = scoreData.score || 0;
         updateSessionInfo();
-    }
+    });
 
-    showFeedback("⏭️ Question skipped! " + data.scoreAdjustment + " points", false);
+    showFeedback("⏭️ Question skipped!", false);
 
     // Check if treasure hunt is completed after skipping
     if (data.completed) {
         showFeedback("Treasure hunt completed!", true);
         setTimeout(() => {
             showSection("results-section");
-            displayLeaderboard();
+            getLeaderboard(appData.session);
         }, 2000);
     } else {
         // Load next question
@@ -363,7 +355,105 @@ function createAnswerInput(questionType) {
 }
 
 //ANSWER SUBMISSION
+function submitAnswer(session, answer){
+    // update location if needed
+    tryUpdateLocation();
 
+    // Check if the answer is empty or only spaces
+    if (!answer || answer.toString().trim() === "") {
+        showFeedback("Please enter your answer", false);
+        return Promise.reject("Empty answer");
+    }
+    // Trim the answer
+    answer = answer.toString().trim();
+
+    let url = "answer?session=" + session + "&answer=" + encodeURIComponent(answer);
+    if(appData.myLocation.latitude && appData.myLocation.longitude){
+        url += "&latitude=" + appData.myLocation.latitude + "&longitude=" + appData.myLocation.longitude;
+    }
+    showLoading(true);
+
+    // Send the API request
+    return callAPI(url)
+        .then(function(data){
+            // Show feedback based on correctness
+            if (data.correct !== undefined) {
+                if (data.correct) {
+
+                    showFeedback("✅ Correct!", true);
+
+                    getScore(session).then(function(scoreData){
+                        appData.score = scoreData.score || 0;
+                        updateSessionInfo();
+                    });
+
+
+                } else {
+
+                    showFeedback("❌ Incorrect. " + (data.message || "Try again!"), false);
+
+                }
+            }
+            // If game is completed
+            if (data.completed || data.status === "FINISHED"){
+                showFeedback("Treasure Hunt completed!", true);
+                showLoading(false);
+                showSection("results-section");
+                getLeaderboard(session);
+                return;
+            }
+
+            // Load next question
+            getQuestion(session);
+
+        })
+        .then(function() {
+            // Hide the loader after uploading the next question
+            showLoading(false);
+        })
+        .catch(function(error){
+            showFeedback("Error submitting answer: " + error.message, false);
+            showLoading(false);
+            throw error;
+        });
+}
+
+function handleSubmitAnswer() {
+
+    // Get the answer input element
+    const answerInput = document.getElementById("answerInput");
+    if (!answerInput) {
+        showFeedback("Answer input not found", false);
+        return;
+    }
+
+    // Get the value based on input type
+    let answer = answerInput.value;
+
+    // For select elements, check if a valid option was selected
+    if (answerInput.tagName === 'SELECT' && (!answer || answer === "")) {
+        showFeedback("Please select an answer", false);
+        return;
+    }
+
+    // Disable the submit button temporarily to prevent double submission
+    const submitBtn = document.getElementById("submitAnswerBtn");
+    if (submitBtn) {
+        submitBtn.disabled = true;
+    }
+
+    // Submit the answer
+    submitAnswer(appData.session, answer)
+        .catch(function(error) {
+            console.error("Submit error:", error);
+        })
+        .finally(function() {
+            // Re-enable the submit button
+            if (submitBtn) {
+                submitBtn.disabled = false;
+            }
+        });
+}
 
 //FINISH
 
@@ -458,6 +548,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("loadHuntBtn").addEventListener("click", loadTreasureHunts);
     document.getElementById("playAgainBtn").addEventListener("click", resetApp);
     document.getElementById("returnHomeBtn").addEventListener("click", resetApp);
+    document.getElementById("submitAnswerBtn").addEventListener("click", handleSubmitAnswer);
     showSection("welcome-section");
 })
 

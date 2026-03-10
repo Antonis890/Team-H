@@ -1,7 +1,7 @@
 //API SECTION
 const API_LINK="https://codecyprus.org/th/api";
 const APP_NAME = "webapp";
-const LOCATION_COOLDOWN = 0;
+const LOCATION_COOLDOWN = 30000; //30 seconds, used to refresh location
 
 //STORE APP DATA
 const appData = {
@@ -22,11 +22,15 @@ let qrScanner = null;
 //Call the API
 function callAPI(endpoint) {
     return fetch(API_LINK + "/" + endpoint)
-        .then(function(response) {return response.json();})
+        .then(function(response) {
+            return response.json();
+        })
         .then(function(data) {
-            if (data.status === "ERROR") throw new Error(data.errorMessages);
+            if (data.status === "ERROR"){
+                throw new Error(data.errorMessages);
+            }
             return data;
-    });
+        });
 }
 
 //Get all available treasure hunts
@@ -94,12 +98,14 @@ function getScore(session){
     let url = "score?session=" + session;
     return callAPI(url);
 }
+
 function getLeaderboard(session){
     let url = "leaderboard?session=" + session;
     return callAPI(url);
 }
 
 //GEOLOCATION
+//Called once when the hunt starts
 function requestLocationPermission(){
     if(!navigator.geolocation){
         showFeedback("Geolocation is not supported on this device",false)
@@ -113,36 +119,40 @@ function requestLocationPermission(){
 
     },
     function (error){
-        console.error("Location error:",error);
-        showFeedback("Location access denied some questions may not work correctly",false);
-    }
-    );
+        console.log("Location error:",error);
+        showFeedback("Location access denied, some questions may not work correctly",false);
+    });
 }
+//Refresh location every 30 seconds
 function tryUpdateLocation(){
-    if(!navigator.geolocation)return;
+    if(!navigator.geolocation) {
+        return;
+    }
     let now = Date.now();
-if(now-lastLocationUpdate > LOCATION_COOLDOWN){
-    console.log("Location cooldown active using active cordinbates");
-    return;
+    if(now-lastLocationUpdate < LOCATION_COOLDOWN){
+        console.log("Location cooldown active, using active coordinates");
+        return;
+    }
+    navigator.geolocation.getCurrentPosition(function(position) {
+        appData.myLocation.latitude = position.coords.latitude;
+        appData.myLocation.longitude = position.coords.longitude;
+        lastLocationUpdate = Date.now();
+        showLocationStatus("Location updated", true);
+        },
+        function(){
+        showLocationStatus("Location unavailable",false);
+    });
 }
-navigator.geolocation.getCurrentPosition(function(position) {
-    appData.myLocation.latitude = position.coords.latitude;
-    appData.myLocation.longitude = position.coords.longitude;
-    lastLocationUpdate = Date.now();
-    showLocationStatus("Location updated", true);
-},
-    function(){
-    showLocationStatus("Location unavailable",false);
 
-
-}
-);
-}
 function showLocationStatus(message,isSuccess){
     const locationText = document.getElementById("locationText");
     const locationIcon = document.getElementById("locationIcon");
-    if(locationText) locationText.textContent = message;
-    if(locationIcon)locationIcon.textContent = isSuccess? "📍":"❌";
+    if (locationText) {
+        locationText.textContent = message;
+    }
+    if (locationIcon){
+        locationIcon.textContent = isSuccess ? "📍" : "❌";
+    }
 
 }
 //HUNT SELECTION
@@ -165,7 +175,7 @@ function loadTreasureHunts(){
         })
         .finally(function(){
             showLoading(false);
-        })
+        });
 }
 
 function displayHuntList(hunts){
@@ -195,11 +205,20 @@ function selectHunt(huntId, huntName){
 
     startSession(appData.playerName, huntId)
         .then(function(data){
-            if(!data.session)throw new Error("Could not start session");
+            if(!data.session){
+                throw new Error("Could not start session");
+            }
             appData.session = data.session;
             appData.currentHunt = { id: huntId, name: huntName};
             appData.isPlaying = true;
             updateSessionInfo();
+
+            const locationStatus = document.getElementById("locationStatus");
+            if (locationStatus){
+                locationStatus.classList.remove("hidden");
+            }
+            showLocationStatus("Waiting for location", false);
+            requestLocationPermission();
 
             showSection("question-section");
             return getQuestion(appData.session);

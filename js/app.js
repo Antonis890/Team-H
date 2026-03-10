@@ -107,41 +107,45 @@ function getLeaderboard(session){
 //GEOLOCATION
 //Called once when the hunt starts
 function requestLocationPermission(){
-    if(!navigator.geolocation){
-        showFeedback("Geolocation is not supported on this device",false)
-        return
+    if (!navigator.geolocation) {
+        showFeedback("Geolocation is not supported on this device",false);
+        return;
     }
-    navigator.geolocation.getCurrentPosition(function(position) {
-        appData.myLocation.latitude = position.coords.latitude;
-        appData.myLocation.longitude = position.coords.longitude;
-        lastLocationUpdate = Date.now();
-        console.log("Location granted:", appData.myLocation);
-
-    },
-    function (error){
-        console.log("Location error:",error);
-        showFeedback("Location access denied, some questions may not work correctly",false);
-    });
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            appData.myLocation.latitude = position.coords.latitude;
+            appData.myLocation.longitude = position.coords.longitude;
+            lastLocationUpdate = Date.now();
+            console.log("Location granted:", appData.myLocation);
+            },
+        function (error){
+            console.log("Location error:",error);
+            showFeedback("Location access denied, some questions may not work correctly",false);
+        }
+    );
 }
+
 //Refresh location every 30 seconds
 function tryUpdateLocation(){
-    if(!navigator.geolocation) {
+    if (!navigator.geolocation) {
         return;
     }
     let now = Date.now();
-    if(now-lastLocationUpdate < LOCATION_COOLDOWN){
-        console.log("Location cooldown active, using active coordinates");
+    if (now - lastLocationUpdate < LOCATION_COOLDOWN) {
+        console.log("Location cooldown active, using stored coordinates");
         return;
     }
-    navigator.geolocation.getCurrentPosition(function(position) {
-        appData.myLocation.latitude = position.coords.latitude;
-        appData.myLocation.longitude = position.coords.longitude;
-        lastLocationUpdate = Date.now();
-        showLocationStatus("Location updated", true);
-        },
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            appData.myLocation.latitude = position.coords.latitude;
+            appData.myLocation.longitude = position.coords.longitude;
+            lastLocationUpdate = Date.now();
+            showLocationStatus("Location updated", true);
+            },
         function(){
-        showLocationStatus("Location unavailable",false);
-    });
+            showLocationStatus("Location unavailable",false);
+        }
+    );
 }
 
 function showLocationStatus(message,isSuccess){
@@ -150,15 +154,15 @@ function showLocationStatus(message,isSuccess){
     if (locationText) {
         locationText.textContent = message;
     }
-    if (locationIcon){
+    if (locationIcon) {
         locationIcon.textContent = isSuccess ? "📍" : "❌";
     }
-
 }
+
 //HUNT SELECTION
 function loadTreasureHunts(){
     const playerName = document.getElementById("playerNameInput").value.trim();
-    if (!playerName){
+    if (!playerName) {
        showFeedback("Please enter your name", false);
        return;
     }
@@ -181,7 +185,7 @@ function loadTreasureHunts(){
 function displayHuntList(hunts){
     const huntList = document.getElementById("huntList");
     huntList.innerHTML = "";
-    if(!hunts || hunts.length === 0){
+    if (!hunts || hunts.length === 0) {
         huntList.innerHTML = "<p>No treasure hunts available</p>";
         return;
     }
@@ -205,7 +209,7 @@ function selectHunt(huntId, huntName){
 
     startSession(appData.playerName, huntId)
         .then(function(data){
-            if(!data.session){
+            if (!data.session) {
                 throw new Error("Could not start session");
             }
             appData.session = data.session;
@@ -214,10 +218,10 @@ function selectHunt(huntId, huntName){
             updateSessionInfo();
 
             const locationStatus = document.getElementById("locationStatus");
-            if (locationStatus){
+            if (locationStatus) {
                 locationStatus.classList.remove("hidden");
             }
-            showLocationStatus("Waiting for location", false);
+            showLocationStatus("Waiting for location...", false);
             requestLocationPermission();
 
             showSection("question-section");
@@ -227,8 +231,8 @@ function selectHunt(huntId, huntName){
             showError("Could not start hunt: " + error.message);
         })
         .finally(function(){
-        showLoading(false);
-    })
+            showLoading(false);
+        });
 }
 
 //QUESTIONS
@@ -276,10 +280,9 @@ function displayQuestion(questionData) {
 
     // Show location requirement
     const locationInfo = document.getElementById("locationInfo");
-    if (questionData['requires-location']) {
+    if (questionData.requiresLocation) {
         locationInfo.textContent = "📍 This question requires you to be at a specific location";
         locationInfo.classList.remove("hidden");
-        enableLocationTracking();
     } else {
         locationInfo.classList.add("hidden");
     }
@@ -377,7 +380,7 @@ function resetApp(){
     appData.myLocation.longitude = null;
     window.selectedAnswer = null;
 
-    document.getElementById("playerNameInput").value = appData.playerName || "";
+    document.getElementById("playerNameInput").value = "";
     document.getElementById("huntSelection").classList.add("hidden");
     updateSessionInfo();
     showSection("welcome-section");
@@ -394,7 +397,7 @@ function showSection(sectionId){
     }
     //show the target section
     const targetSection = document.getElementById(sectionId);
-    if (targetSection){
+    if (targetSection) {
         targetSection.classList.add("active");
     }
 }
@@ -402,9 +405,9 @@ function showSection(sectionId){
 //Show or hide loading spinner
 function showLoading(show){
     const overlay = document.getElementById("loadingOverlay");
-    if (show){
+    if (show) {
         overlay.classList.remove("hidden");
-    } else{
+    } else {
         overlay.classList.add("hidden");
     }
 }
@@ -425,7 +428,7 @@ function showFeedback(message, isSuccess){
     //Remove old classes
     feedback.classList.remove("success", "error", "hidden");
     //Add new class
-    if (isSuccess){
+    if (isSuccess) {
         feedback.classList.add("success");
     } else {
         feedback.classList.add("error");
@@ -450,7 +453,7 @@ function updateSessionInfo(){
     }
 }
 
-//INNIT
+//INIT
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("loadHuntBtn").addEventListener("click", loadTreasureHunts);
     document.getElementById("playAgainBtn").addEventListener("click", resetApp);

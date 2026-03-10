@@ -100,7 +100,7 @@ function getLeaderboard(session){
 }
 
 //GEOLOCATION
-function requestLocationPermision(){
+function requestLocationPermission(){
     if(!navigator.geolocation){
         showFeedback("Geolocation is not supported on this device",false)
         return

@@ -243,18 +243,32 @@ function selectHunt(huntId, huntName){
 //Display question in the UI
 function displayQuestion(questionData) {
     const questionDiv = document.getElementById("questionText");
-    questionDiv.innerHTML = questionData.questionText||"No question text";
-    const links =questionDiv.querySelectorAll("a");
-    for (let i=0; i<links.length; i++) {
+    questionDiv.innerHTML = questionData.questionText || "No question text";
+    const links = questionDiv.querySelectorAll("a");
+    for (let i = 0; i < links.length; i++) {
         links[i].setAttribute("target", "_blank");
     }
+
+    //title
+    document.getElementById("questionTitle").textContent = (questionData.questionType || "TEXT") + "Question";
     const questionContainer = document.getElementById("questionContainer");
     const questionSection = document.getElementById("question-section");
-
+    //question indicator
+    document.getElementById("questionIndex").textContent = "Question" + (questionData.currentQuestionIndex + 1) + "of" + questionData.numOfQuestions;
 
     // Update question text
-    document.getElementById("questionText").innerHTML = questionData.questionText || "No question text";
+    document.getElementById("questionType").textContent = questionData.questionType || "TEXT";
 
+    //skip warning
+    const skipInfo = document.getElementById("skipInfo");
+    if (questionData.canbeSkipped) {
+        skipInfo.textContent = "Skip penalty:" + questionData.skipScore + "pts";
+        skipInfo.classList.remove("hidden");
+    } else {
+        skipInfo.classList.add("hidden");
+    }
+}
+    //location warning
     // Update question info
     document.getElementById("questionIndex").textContent =
         `Question ${questionData.currentQuestionIndex + 1} of ${questionData.numOfQuestions}`;

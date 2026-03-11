@@ -242,6 +242,12 @@ function selectHunt(huntId, huntName){
 }
 //Display question in the UI
 function displayQuestion(questionData) {
+    const questionDiv = document.getElementById("questionText");
+    questionDiv.innerHTML = questionData.questionText||"No question text";
+    const links =questionDiv.querySelectorAll("a");
+    for (let i=0; i<links.length; i++) {
+        links[i].setAttribute("target", "_blank");
+    }
     const questionContainer = document.getElementById("questionContainer");
     const questionSection = document.getElementById("question-section");
 

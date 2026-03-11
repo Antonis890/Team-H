@@ -220,18 +220,25 @@ function selectHunt(huntId, huntName){
     showLoading(true);
 
     return getQuestion(appData.session)
-        .then(function(data){
+        .then(function(data) {
+            showLoading(false);
             if (data.completed) {
-                // return finishHunt();
+                finishHunt();
+                return;
             }
-            showFeedback("Treasure hunt completed!", true);
-            showSection("results-section");
-            getLeaderboard(session);
-            return null;
             appData.currentQuestion = data;
+            if (data.currentScore !== undefined) {
+                appData.score = data.curentScore;
+                updateSessionInfo();
+            }
             displayQuestion(data);
-            return data;
-        });
+            showSection("question-section");
+        })
+       .catch(function(error) {
+           showLoading(false);
+           showError("Could not start hunt: " + error.message);
+       });
+
 }
 //Display question in the UI
 function displayQuestion(questionData) {

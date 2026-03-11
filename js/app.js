@@ -49,19 +49,7 @@ function startSession(playerName, huntId){
 function getQuestion(session){
     let url = "question?session=" + session;
     return callAPI(url)
-        .then(function(data){
-            // Check if the game is finished
-            if (data.completed) {
-                showFeedback("Treasure hunt completed!", true);
-                showSection("results-section");
-                getLeaderboard(session);
-                return null;
-            }
 
-            appData.currentQuestion = data;
-            displayQuestion(data);
-            return data;
-        });
 
 }
 
@@ -228,10 +216,28 @@ function selectHunt(huntId, huntName){
 }
 
 //QUESTIONS
+   function loadNextQuestion(){
+    showLoading(true);
+
+    return getQuestion(appData.session)
+        .then(function(data){
+            if (data.completed) {
+                // return finishHunt();
+            }
+            showFeedback("Treasure hunt completed!", true);
+            showSection("results-section");
+            getLeaderboard(session);
+            return null;
+            appData.currentQuestion = data;
+            displayQuestion(data);
+            return data;
+        });
+}
 //Display question in the UI
 function displayQuestion(questionData) {
     const questionContainer = document.getElementById("questionContainer");
     const questionSection = document.getElementById("question-section");
+
 
     // Update question text
     document.getElementById("questionText").innerHTML = questionData.questionText || "No question text";

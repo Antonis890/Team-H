@@ -299,14 +299,45 @@ function createAnswerInput(questionData) {
     container.innerHTML ="";
     window.sellectedAnswer = null;
 
-    switch (questionType){
+    switch (questionType) {
 
-        case "BOOLEAN":container.innerHTML ="<div class='answer-options'>"+"<button class ='option-btn'onclick='sellectAnswer(this,\"true\")'>True</button>"
-            +"<button class = 'option-btn'onclick='sellectAnswer(this,\"false\")'>false</button>"
-            +"</div>";
+        case "BOOLEAN":
+            container.innerHTML = "<div class='answer-options'>" + "<button class ='option-btn'onclick='sellectAnswer(this,\"true\")'>True</button>"
+                + "<button class = 'option-btn'onclick='sellectAnswer(this,\"false\")'>false</button>"
+                + "</div>";
             break;
 
+        case "MCQ":
+            const letters = ["A", "B", "C", "D"];
+            let html = "<div class='answer-optionsmcq-options'>";
+            for (let i = 0; i < 4; i++) {
+                html += "<button class ='option-btn'onclick='sellectAnswer(this,\"" + letters[i] + "\")'>" + letters[i] + "</button>";
+            }
+            html += "</div>";
+            container.innerHTML = html;
+            break;
 
+        case "NUMERIC":
+            container.innerHTML = "<input type='text'inputmode='decimal'id='answerInput'class='app-input'placeholder='Type a number'>";
+            break;
+
+        case "INTEGER":
+            container.innerHTML = "<input type='text'inputmode='numeric'id='answerInput'class='app-input'placeholder='Type a whole number'>";
+            break;
+
+        case "TEXT":
+        default:
+            container.innerHTML = "<input type='text'id='answerInput'class='app-input'placeholder='Type your answer'>";
+            break;
+    }
+}
+function sellectAnswer(button,answer){
+    const buttons = document.querySelectorAll(".option-btn");
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("selected");
+    }
+    button.classList.add("selected");
+    window.sellecttedAnswer = answer;
 }
 
     // Update question info
@@ -358,7 +389,7 @@ function createAnswerInput(questionData) {
     // Show the question section
     questionSection.classList.remove("hidden");
     questionContainer.classList.remove("hidden");
-}
+
 
 // Handle skip response
 function handleSkipResponse(data) {

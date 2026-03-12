@@ -49,19 +49,7 @@ function startSession(playerName, huntId){
 function getQuestion(session){
     let url = "question?session=" + session;
     return callAPI(url)
-        .then(function(data){
-            // Check if the game is finished
-            if (data.completed) {
-                showFeedback("Treasure hunt completed!", true);
-                showSection("results-section");
-                getLeaderboard(session);
-                return null;
-            }
 
-            appData.currentQuestion = data;
-            displayQuestion(data);
-            return data;
-        });
 
 }
 
@@ -129,7 +117,7 @@ function tryUpdateLocation(){
     }
     navigator.geolocation.getCurrentPosition(
         function(position) {
-            appData.myLocation.latitude = position.coords.latitude;
+            appData.myLocation.latitude = position.coords.latitude;    //needs fix today!!!!
             appData.myLocation.longitude = position.coords.longitude;
             lastLocationUpdate = Date.now();
             showLocationStatus("Location updated", true);
@@ -228,13 +216,129 @@ function selectHunt(huntId, huntName){
 }
 
 //QUESTIONS
+   function loadNextQuestion(){
+    showLoading(true);
+
+    return getQuestion(appData.session)
+        .then(function(data) {
+            showLoading(false);
+            if (data.completed) {
+                finishHunt();
+                return;
+            }
+            appData.currentQuestion = data;
+            if (data.currentScore !== undefined) {
+                appData.score = data.curentScore;
+                updateSessionInfo();
+            }
+            displayQuestion(data);
+            showSection("question-section");
+        })
+       .catch(function(error) {
+           showLoading(false);
+           showError("Could not start hunt: " + error.message);
+       });
+
+}
 //Display question in the UI
 function displayQuestion(questionData) {
+    const questionDiv = document.getElementById("questionText");
+    questionDiv.innerHTML = questionData.questionText || "No question text";
+    const links = questionDiv.querySelectorAll("a");
+    for (let i = 0; i < links.length; i++) {
+        links[i].setAttribute("target", "_blank");
+    }
+
+    //title
+    document.getElementById("questionTitle").textContent = (questionData.questionType || "TEXT") + "Question";
     const questionContainer = document.getElementById("questionContainer");
     const questionSection = document.getElementById("question-section");
+    //question indicator
+    document.getElementById("questionIndex").textContent = "Question" + (questionData.currentQuestionIndex + 1) + "of" + questionData.numOfQuestions;
 
     // Update question text
-    document.getElementById("questionText").innerHTML = questionData.questionText || "No question text";
+    document.getElementById("questionType").textContent = questionData.questionType || "TEXT";
+
+    //skip warning
+    const skipInfo = document.getElementById("skipInfo");
+    if (questionData.canbeSkipped) {
+        skipInfo.textContent = "Skip penalty:" + questionData.skipScore + "pts";
+        skipInfo.classList.remove("hidden");
+    } else {
+        skipInfo.classList.add("hidden");
+    }
+}
+    //location warning
+    const locationInfo =document.getElementById("locationInfo");
+if (questionData.requiresLocation) {
+    locationInfo.textContent = "📍 This question checks that you are in the right place, make sure the location is enabled";
+    locationInfo.classList.add("hidden");
+}else {
+    locationInfo.classList.add("hidden");
+}
+//answer input
+createAnswerInput(questionData);
+//skip button
+const skipBtn = document.getElementById("skipQuestionBtn");
+if (questionData.canBeSkipped === false){
+    skipBtn.disabled = true;
+    skipBtn.textContent = "Cannot skip";
+}else {
+    skipBtn.disabled = false;
+    skipBtn.textContent = "Skip Question";
+}
+const feedback = document.getElementById("feedback");
+if (feedback) {
+    feedback.classList.add("hidden");
+}
+document.getElementById("questionContainer").classList.remove("hidden");
+
+function createAnswerInput(questionData) {
+    const container = document.getElementById("questionContainer");
+    const questionType =(questionData.questionType || "TEXT").toUpperCase();
+    container.innerHTML ="";
+    window.sellectedAnswer = null;
+
+    switch (questionType) {
+
+        case "BOOLEAN":
+            container.innerHTML = "<div class='answer-options'>" + "<button class ='option-btn'onclick='sellectAnswer(this,\"true\")'>True</button>"
+                + "<button class = 'option-btn'onclick='sellectAnswer(this,\"false\")'>false</button>"
+                + "</div>";
+            break;
+
+        case "MCQ":
+            const letters = ["A", "B", "C", "D"];
+            let html = "<div class='answer-optionsmcq-options'>";
+            for (let i = 0; i < 4; i++) {
+                html += "<button class ='option-btn'onclick='sellectAnswer(this,\"" + letters[i] + "\")'>" + letters[i] + "</button>";
+            }
+            html += "</div>";
+            container.innerHTML = html;
+            break;
+
+        case "NUMERIC":
+            container.innerHTML = "<input type='text'inputmode='decimal'id='answerInput'class='app-input'placeholder='Type a number'>";
+            break;
+
+        case "INTEGER":
+            container.innerHTML = "<input type='text'inputmode='numeric'id='answerInput'class='app-input'placeholder='Type a whole number'>";
+            break;
+
+        case "TEXT":
+        default:
+            container.innerHTML = "<input type='text'id='answerInput'class='app-input'placeholder='Type your answer'>";
+            break;
+    }
+}
+function sellectAnswer(button,answer){
+    const buttons = document.querySelectorAll(".option-btn");
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove("selected");
+    }
+    button.classList.add("selected");
+    window.sellecttedAnswer = answer;
+}
 
     // Update question info
     document.getElementById("questionIndex").textContent =
@@ -285,7 +389,7 @@ function displayQuestion(questionData) {
     // Show the question section
     questionSection.classList.remove("hidden");
     questionContainer.classList.remove("hidden");
-}
+
 
 // Handle skip response
 function handleSkipResponse(data) {

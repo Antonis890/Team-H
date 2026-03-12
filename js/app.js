@@ -117,7 +117,7 @@ function tryUpdateLocation(){
     }
     navigator.geolocation.getCurrentPosition(
         function(position) {
-            appData.myLocation.latitude = position.coords.latitude;
+            appData.myLocation.latitude = position.coords.latitude;    //needs fix today!!!!
             appData.myLocation.longitude = position.coords.longitude;
             lastLocationUpdate = Date.now();
             showLocationStatus("Location updated", true);
@@ -269,6 +269,46 @@ function displayQuestion(questionData) {
     }
 }
     //location warning
+    const locationInfo =document.getElementById("locationInfo");
+if (questionData.requiresLocation) {
+    locationInfo.textContent = "📍 This question checks that you are in the right place, make sure the location is enabled";
+    locationInfo.classList.add("hidden");
+}else {
+    locationInfo.classList.add("hidden");
+}
+//answer input
+createAnswerInput(questionData);
+//skip button
+const skipBtn = document.getElementById("skipQuestionBtn");
+if (questionData.canBeSkipped === false){
+    skipBtn.disabled = true;
+    skipBtn.textContent = "Cannot skip";
+}else {
+    skipBtn.disabled = false;
+    skipBtn.textContent = "Skip Question";
+}
+const feedback = document.getElementById("feedback");
+if (feedback) {
+    feedback.classList.add("hidden");
+}
+document.getElementById("questionContainer").classList.remove("hidden");
+
+function createAnswerInput(questionData) {
+    const container = document.getElementById("questionContainer");
+    const questionType =(questionData.questionType || "TEXT").toUpperCase();
+    container.innerHTML ="";
+    window.sellectedAnswer = null;
+
+    switch (questionType){
+
+        case "BOOLEAN":container.innerHTML ="<div class='answer-options'>"+"<button class ='option-btn'onclick='sellectAnswer(this,\"true\")'>True</button>"
+            +"<button class = 'option-btn'onclick='sellectAnswer(this,\"false\")'>false</button>"
+            +"</div>";
+            break;
+
+
+}
+
     // Update question info
     document.getElementById("questionIndex").textContent =
         `Question ${questionData.currentQuestionIndex + 1} of ${questionData.numOfQuestions}`;

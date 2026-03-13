@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing page</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+
+<header class="header">
+    <img src= "media/teamH.png" alt= "logo">
+    <nav class="menu" id="menu">
+        <a href="instruction.html">Instruction</a>
+        <a href="index.html">About</a>
+
+    </nav>
+
+    <a href="javascript:void(0);" class="icon" onclick="openMenu()">
+        <svg class="menu_icon" xmlns="http://www.w3.org/2000/svg" fill="white" x="0px" y="0px" width="40" height="40" viewBox="0 0 50 50">
+            <path d="M5 8 A2 2 0 1 0 5 12 L45 12 A2 2 0 1 0 45 8 L5 8 z
+                         M5 23 A2 2 0 1 0 5 27 L45 27 A2 2 0 1 0 45 23 L5 23 z
+                         M5 38 A2 2 0 1 0 5 42 L45 42 A2 2 0 1 0 45 38 L5 38 z"></path>
+        </svg>
+
+        <span class="close-icon">✕</span>
+    </a>
+</header>
+
+<section class="fly-in">
+    <h2>What is Treasure Hunt?</h2>
+    <p>
+        The treasure hunt is an online quiz game where a player earns point by answering different questions.
+        To find information for answers, you need to go specific locations in real life.
+    </p>
+</section>
+
+<section class="fly-in">
+    <h2>How to play?</h2>
+    <ul>
+        <li>Click on the "Let's get started!" button on the main page</li>
+        <li>Type the desired player name and click on "Load Available Hints"</li>
+        <li>Allow game to access your geolocation</li>
+        <li>Answer the question and go to a location</li>
+        <li>Each correctly answered question will give you score points</li>
+        <li>After finishing with questions, you can check the leaderboard</li>
+    </ul>
+</section>
+
+<footer class="footer fly-in">
+    <div class="footer-inner">
+
+        <h3 class="footer-title">Links</h3>
+
+        <nav class="footer-links">
+            <a href="app.html">Play the App</a>
+            <a href="test.html">Testing</a>
+            <a href="notes.html">Project Notes</a>
+        </nav>
+
+        <div class="footer-copy">
+            © 2026 Code Cyprus Treasure Hunt · Team H
+        </div>
+
+    </div>
+</footer>
+
+<script>
+    // Function to open burger menu
+    function openMenu() {
+        const menu = document.getElementById("menu");
+
+        menu.classList.toggle("responsive");
+        document.body.classList.toggle("menu-open");
+    }
+
+    // Scroll tracking for animation
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('show');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.2
+    });
+
+    document.querySelectorAll('.fly-in').forEach(el => {
+        observer.observe(el);
+    });
+</script>
+
+</body>
+</html>

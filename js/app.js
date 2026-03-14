@@ -145,7 +145,7 @@ function loadTreasureHunts(){
             document.getElementById("huntSelection").classList.remove("hidden");
         })
         .catch(function(){
-            showError("Could not load treasure hunts");
+            showFeedback("Could not load treasure hunts", false);
         })
         .finally(function(){
             showLoading(false);
@@ -194,8 +194,7 @@ function selectHunt(huntId, huntName){
             showLocationStatus("Waiting for location...", false);
             requestLocationPermission();
 
-            showSection("question-section");
-            return getQuestion(appData.session);
+            return loadNextQuestion();
         })
         .catch(function(error){
             showError("Could not start hunt: " + error.message);
@@ -218,7 +217,7 @@ function selectHunt(huntId, huntName){
             }
             appData.currentQuestion = data;
             if (data.currentScore !== undefined) {
-                appData.score = data.curentScore;
+                appData.score = data.currentScore;
                 updateSessionInfo();
             }
             displayQuestion(data);
@@ -261,7 +260,7 @@ function displayQuestion(questionData) {
     const locationInfo = document.getElementById("locationInfo");
     if (questionData.requiresLocation) {
         locationInfo.textContent = "📍 This question checks that you are in the right place, make sure the location is enabled";
-        locationInfo.classList.add("hidden");
+        locationInfo.classList.remove("hidden");
     } else {
         locationInfo.classList.add("hidden");
     }
@@ -287,7 +286,7 @@ function displayQuestion(questionData) {
         const container = document.getElementById("questionContainer");
         const questionType = (questionData.questionType || "TEXT").toUpperCase();
         container.innerHTML ="";
-        window.sellectedAnswer = null;
+        window.selectedAnswer = null;
 
     switch (questionType) {
 

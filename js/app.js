@@ -482,5 +482,5 @@ document.addEventListener("DOMContentLoaded", function() {
 })
 
 window.selectHunt = selectHunt;
-window.selectAnswer = selectedAnswer;
+window.selectAnswer = selectAnswer;
 

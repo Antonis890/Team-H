@@ -459,9 +459,57 @@ function createAnswerInput(questionType) {
 }
 
 //ANSWER SUBMISSION
-function submitAnswer(session, answer){
-    // update location if needed
+function handlesubmitAnswer() {
+    let answer = window.selectedAnswer;
+    if (!answer) {
+        const answerInput = document.getElementById("answerInput");
+        if (anwerInput) {
+            answer = anwerInput.value.trim();
+        }
+    }
+    if (!answer) {
+        showFeedback("Please provide an answer", false);
+        return;
+    }
+    //refresh location every 30 seconds
+.
     tryUpdateLocation();
+
+    showLoading(true);
+
+    submitAnswer(appData.session, answer)
+        .then(function (result) {
+            showLoading(false);
+
+            let isCorrect = false;
+            if (result.correct === true) {
+                isCorrect = true;
+            }
+            if (isCorrect) {
+                appData.score += result.scoreAdjustment;
+                showFeedback("Correct!+" + result.scoreAdjustment + "points", true);
+
+            } else {
+                appData.score += result.scoreAdjustment;
+                showFeedback("Wrong Answer.+" + result.scoreAdjustment + "points", false);
+            }
+            updateSessionInfo();
+            window.selectedAnswer = null;
+
+            if (result.completed) {
+                finishHunt();
+                return;
+            }
+            // 2 seconds for the user to read feedback
+            setTimeout(function () {
+                loadNextQuestion();
+            }, 2000);
+        })
+        .catch(function () {
+            showLoading(false);
+            showFeedback("Could not submit answer", false);
+        });
+
 
     // Check if the answer is empty or only spaces
     if (!answer || answer.toString().trim() === "") {

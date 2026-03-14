@@ -49,29 +49,19 @@ function startSession(playerName, huntId){
 function getQuestion(session){
     let url = "question?session=" + session;
     return callAPI(url)
-
-
 }
 
-//Skip question
-function skipQuestion(session){
-    // Check if question can be skipped
-    if (appData.currentQuestion && !appData.currentQuestion.canBeSkipped) {
-        showFeedback("This question cannot be skipped", false);
-        return Promise.reject("Cannot skip");
+function submitAnswer(session, answer){
+    let url = "answer?session=" + session + "&answer=" + encodeURIComponent(answer);
+    if (appData.myLocation.latitude && appData.myLocation.longitude) {
+        url += "&location=" + appData.myLocation.latitude + "&location=" + appData.myLocation.longitude;
     }
+    return callAPI(url);
+}
 
-    const url = "skip?session=" + session;
-
-    return callAPI(url)
-        .then(function(data) {
-            handleSkipResponse(data);
-            return data;
-        })
-        .catch(function(error) {
-            showFeedback("Error skipping question: " + error.message, false);
-            throw error;
-        });
+function skipQuestion(session){
+    let url = "skip?session=" + session;
+    return callAPI(url);
 }
 
 function getScore(session){
@@ -251,8 +241,7 @@ function displayQuestion(questionData) {
 
     //title
     document.getElementById("questionTitle").textContent = (questionData.questionType || "TEXT") + "Question";
-    const questionContainer = document.getElementById("questionContainer");
-    const questionSection = document.getElementById("question-section");
+
     //question indicator
     document.getElementById("questionIndex").textContent = "Question" + (questionData.currentQuestionIndex + 1) + "of" + questionData.numOfQuestions;
 
@@ -267,212 +256,95 @@ function displayQuestion(questionData) {
     } else {
         skipInfo.classList.add("hidden");
     }
-}
-    //location warning
-    const locationInfo =document.getElementById("locationInfo");
-if (questionData.requiresLocation) {
-    locationInfo.textContent = "📍 This question checks that you are in the right place, make sure the location is enabled";
-    locationInfo.classList.add("hidden");
-}else {
-    locationInfo.classList.add("hidden");
-}
-//answer input
-createAnswerInput(questionData);
-//skip button
-const skipBtn = document.getElementById("skipQuestionBtn");
-if (questionData.canBeSkipped === false){
-    skipBtn.disabled = true;
-    skipBtn.textContent = "Cannot skip";
-}else {
-    skipBtn.disabled = false;
-    skipBtn.textContent = "Skip Question";
-}
-const feedback = document.getElementById("feedback");
-if (feedback) {
-    feedback.classList.add("hidden");
-}
-document.getElementById("questionContainer").classList.remove("hidden");
 
-function createAnswerInput(questionData) {
-    const container = document.getElementById("questionContainer");
-    const questionType =(questionData.questionType || "TEXT").toUpperCase();
-    container.innerHTML ="";
-    window.sellectedAnswer = null;
+    //location warning
+    const locationInfo = document.getElementById("locationInfo");
+    if (questionData.requiresLocation) {
+        locationInfo.textContent = "📍 This question checks that you are in the right place, make sure the location is enabled";
+        locationInfo.classList.add("hidden");
+    } else {
+        locationInfo.classList.add("hidden");
+    }
+    //answer input
+    createAnswerInput(questionData);
+    //skip button
+    const skipBtn = document.getElementById("skipQuestionBtn");
+    if (questionData.canBeSkipped === false){
+        skipBtn.disabled = true;
+        skipBtn.textContent = "Cannot skip";
+    } else {
+        skipBtn.disabled = false;
+        skipBtn.textContent = "Skip Question";
+    }
+    const feedback = document.getElementById("feedback");
+    if (feedback) {
+        feedback.classList.add("hidden");
+    }
+    document.getElementById("questionContainer").classList.remove("hidden");
+}
+
+    function createAnswerInput(questionData) {
+        const container = document.getElementById("questionContainer");
+        const questionType = (questionData.questionType || "TEXT").toUpperCase();
+        container.innerHTML ="";
+        window.sellectedAnswer = null;
 
     switch (questionType) {
 
         case "BOOLEAN":
-            container.innerHTML = "<div class='answer-options'>" + "<button class ='option-btn'onclick='sellectAnswer(this,\"true\")'>True</button>"
-                + "<button class = 'option-btn'onclick='sellectAnswer(this,\"false\")'>false</button>"
+            container.innerHTML = "<div class='answer-options'>" + "<button class ='option-btn'onclick='selectAnswer(this,\"True\")'>True</button>"
+                + "<button class = 'option-btn' onclick='selectAnswer(this,\"false\")'>False</button>"
                 + "</div>";
             break;
 
         case "MCQ":
             const letters = ["A", "B", "C", "D"];
-            let html = "<div class='answer-optionsmcq-options'>";
+            let html = "<div class='answer-options mcq-options'>";
             for (let i = 0; i < 4; i++) {
-                html += "<button class ='option-btn'onclick='sellectAnswer(this,\"" + letters[i] + "\")'>" + letters[i] + "</button>";
+                html += "<button class ='option-btn' onclick='selectAnswer(this,\"" + letters[i] + "\")'>" + letters[i] + "</button>";
             }
             html += "</div>";
             container.innerHTML = html;
             break;
 
         case "NUMERIC":
-            container.innerHTML = "<input type='text'inputmode='decimal'id='answerInput'class='app-input'placeholder='Type a number'>";
+            container.innerHTML = "<input type='text' inputmode='decimal' id='answerInput' class='app-input' placeholder='Type a number'>";
             break;
 
         case "INTEGER":
-            container.innerHTML = "<input type='text'inputmode='numeric'id='answerInput'class='app-input'placeholder='Type a whole number'>";
+            container.innerHTML = "<input type='text' inputmode='numeric' id='answerInput' class='app-input' placeholder='Type a whole number'>";
             break;
 
         case "TEXT":
         default:
-            container.innerHTML = "<input type='text'id='answerInput'class='app-input'placeholder='Type your answer'>";
+            container.innerHTML = "<input type='text' id='answerInput' class='app-input' placeholder='Type your answer'>";
             break;
     }
 }
-function sellectAnswer(button,answer){
+function selectAnswer(button,answer){
     const buttons = document.querySelectorAll(".option-btn");
     for (let i = 0; i < buttons.length; i++) {
         buttons[i].classList.remove("selected");
     }
     button.classList.add("selected");
-    window.sellecttedAnswer = answer;
-}
-
-    // Update question info
-    document.getElementById("questionIndex").textContent =
-        `Question ${questionData.currentQuestionIndex + 1} of ${questionData.numOfQuestions}`;
-
-    // Display question type
-    document.getElementById("questionType").textContent =
-        "Type: " + questionData.questionType;
-
-
-    const skipBtn = document.getElementById("skipQuestionBtn");
-    if (skipBtn) {
-        skipBtn.disabled = false;
-
-        skipBtn.onclick = function() {
-            if (!questionData.canBeSkipped) {
-                showFeedback("This question cannot be skipped", false);
-                return;
-            }
-            skipQuestion(appData.session)
-                .catch(err => {
-                    showFeedback("Error skipping question: " + err.message, false);
-                });
-        };
-    }
-
-    // Show if question can be skipped
-    const skipInfo = document.getElementById("skipInfo");
-    if (questionData.canBeSkipped) {
-        skipInfo.textContent = `Skip penalty: ${questionData.skipScore} points`;
-        skipInfo.classList.remove("hidden");
-    } else {
-        skipInfo.classList.add("hidden");
-    }
-
-    // Show location requirement
-    const locationInfo = document.getElementById("locationInfo");
-    if (questionData.requiresLocation) {
-        locationInfo.textContent = "📍 This question requires you to be at a specific location";
-        locationInfo.classList.remove("hidden");
-    } else {
-        locationInfo.classList.add("hidden");
-    }
-
-    // Create answer input based on question type
-    createAnswerInput(questionData.questionType);
-
-    // Show the question section
-    questionSection.classList.remove("hidden");
-    questionContainer.classList.remove("hidden");
-
-
-// Handle skip response
-function handleSkipResponse(data) {
-    // Update score by fetching from API
-    getScore(appData.session).then(scoreData => {
-        appData.score = scoreData.score || 0;
-        updateSessionInfo();
-    });
-
-    showFeedback("⏭️ Question skipped!", false);
-
-    // Check if treasure hunt is completed after skipping
-    if (data.completed) {
-        showFeedback("Treasure hunt completed!", true);
-        setTimeout(() => {
-            showSection("results-section");
-            getLeaderboard(appData.session);
-        }, 2000);
-    } else {
-        // Load next question
-        setTimeout(() => {
-            getQuestion(appData.session);
-        }, 1500);
-    }
-}
-
-// Create appropriate answer input based on question type
-function createAnswerInput(questionType) {
-    const container = document.getElementById("answerInputContainer");
-    let html = "";
-
-    switch(questionType) {
-        case "BOOLEAN":
-            html = `
-                <select id="answerInput" class="app-input">
-                    <option value="">Select answer...</option>
-                    <option value="true">True</option>
-                    <option value="false">False</option>
-                </select>`;
-            break;
-
-        case "MCQ":
-            html = `
-                <select id="answerInput" class="app-input">
-                    <option value="">Select answer...</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
-                </select>`;
-            break;
-
-        case "INTEGER":
-        case "NUMERIC":
-            html = `<input type="number" id="answerInput" class="app-input"
-                        step="${questionType === "INTEGER" ? 1 : "any"}"
-                        placeholder="Enter your answer">`;
-            break;
-
-        case "TEXT":
-        default:
-            html = `<input type="text" id="answerInput" class="app-input"
-                        placeholder="Enter your answer">`;
-    }
-
-    container.innerHTML = html;
+    window.selectedAnswer = answer;
 }
 
 //ANSWER SUBMISSION
-function handlesubmitAnswer() {
+function handleSubmitAnswer() {
     let answer = window.selectedAnswer;
     if (!answer) {
         const answerInput = document.getElementById("answerInput");
-        if (anwerInput) {
-            answer = anwerInput.value.trim();
+        if (answerInput) {
+            answer = answerInput.value.trim();
         }
     }
     if (!answer) {
         showFeedback("Please provide an answer", false);
         return;
     }
+
     //refresh location every 30 seconds
-.
     tryUpdateLocation();
 
     showLoading(true);
@@ -509,105 +381,10 @@ function handlesubmitAnswer() {
             showLoading(false);
             showFeedback("Could not submit answer", false);
         });
-
-
-    // Check if the answer is empty or only spaces
-    if (!answer || answer.toString().trim() === "") {
-        showFeedback("Please enter your answer", false);
-        return Promise.reject("Empty answer");
-    }
-    // Trim the answer
-    answer = answer.toString().trim();
-
-    let url = "answer?session=" + session + "&answer=" + encodeURIComponent(answer);
-    if(appData.myLocation.latitude && appData.myLocation.longitude){
-        url += "&latitude=" + appData.myLocation.latitude + "&longitude=" + appData.myLocation.longitude;
-    }
-    showLoading(true);
-
-    // Send the API request
-    return callAPI(url)
-        .then(function(data){
-            // Show feedback based on correctness
-            if (data.correct !== undefined) {
-                if (data.correct) {
-
-                    showFeedback("✅ Correct!", true);
-
-                    getScore(session).then(function(scoreData){
-                        appData.score = scoreData.score || 0;
-                        updateSessionInfo();
-                    });
-
-
-                } else {
-
-                    showFeedback("❌ Incorrect. " + (data.message || "Try again!"), false);
-
-                }
-            }
-            // If game is completed
-            if (data.completed || data.status === "FINISHED"){
-                showFeedback("Treasure Hunt completed!", true);
-                showLoading(false);
-                showSection("results-section");
-                getLeaderboard(session);
-                return;
-            }
-
-            // Load next question
-            getQuestion(session);
-
-        })
-        .then(function() {
-            // Hide the loader after uploading the next question
-            showLoading(false);
-        })
-        .catch(function(error){
-            showFeedback("Error submitting answer: " + error.message, false);
-            showLoading(false);
-            throw error;
-        });
-}
-
-function handleSubmitAnswer() {
-
-    // Get the answer input element
-    const answerInput = document.getElementById("answerInput");
-    if (!answerInput) {
-        showFeedback("Answer input not found", false);
-        return;
-    }
-
-    // Get the value based on input type
-    let answer = answerInput.value;
-
-    // For select elements, check if a valid option was selected
-    if (answerInput.tagName === 'SELECT' && (!answer || answer === "")) {
-        showFeedback("Please select an answer", false);
-        return;
-    }
-
-    // Disable the submit button temporarily to prevent double submission
-    const submitBtn = document.getElementById("submitAnswerBtn");
-    if (submitBtn) {
-        submitBtn.disabled = true;
-    }
-
-    // Submit the answer
-    submitAnswer(appData.session, answer)
-        .catch(function(error) {
-            console.error("Submit error:", error);
-        })
-        .finally(function() {
-            // Re-enable the submit button
-            if (submitBtn) {
-                submitBtn.disabled = false;
-            }
-        });
 }
 
 //FINISH
+
 
 
 //RESET
@@ -698,11 +475,12 @@ function updateSessionInfo(){
 //INIT
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("loadHuntBtn").addEventListener("click", loadTreasureHunts);
+    document.getElementById("submitAnswerBtn").addEventListener("click", handleSubmitAnswer);
     document.getElementById("playAgainBtn").addEventListener("click", resetApp);
     document.getElementById("returnHomeBtn").addEventListener("click", resetApp);
-    document.getElementById("submitAnswerBtn").addEventListener("click", handleSubmitAnswer);
     showSection("welcome-section");
 })
 
 window.selectHunt = selectHunt;
+window.selectAnswer = selectedAnswer;
 

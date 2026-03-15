@@ -249,7 +249,7 @@ function displayQuestion(questionData) {
 
     //skip warning
     const skipInfo = document.getElementById("skipInfo");
-    if (questionData.canbeSkipped) {
+    if (questionData.canBeSkipped) {
         skipInfo.textContent = "Skip penalty:" + questionData.skipScore + "pts";
         skipInfo.classList.remove("hidden");
     } else {
@@ -282,11 +282,11 @@ function displayQuestion(questionData) {
     document.getElementById("questionContainer").classList.remove("hidden");
 }
 
-    function createAnswerInput(questionData) {
-        const container = document.getElementById("questionContainer");
-        const questionType = (questionData.questionType || "TEXT").toUpperCase();
-        container.innerHTML ="";
-        window.selectedAnswer = null;
+function createAnswerInput(questionData) {
+    const container = document.getElementById("answerInputContainer");
+    const questionType = (questionData.questionType || "TEXT").toUpperCase();
+    container.innerHTML ="";
+    window.selectedAnswer = null;
 
     switch (questionType) {
 
@@ -504,6 +504,7 @@ function updateSessionInfo(){
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("loadHuntBtn").addEventListener("click", loadTreasureHunts);
     document.getElementById("submitAnswerBtn").addEventListener("click", handleSubmitAnswer);
+    document.getElementById("skipQuestionBtn").addEventListener("click", handleSkipQuestion);
     document.getElementById("playAgainBtn").addEventListener("click", resetApp);
     document.getElementById("returnHomeBtn").addEventListener("click", resetApp);
     showSection("welcome-section");

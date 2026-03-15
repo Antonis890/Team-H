@@ -381,7 +381,36 @@ function handleSubmitAnswer() {
             showFeedback("Could not submit answer", false);
         });
 }
+function handleSkipQuestion() {
+    if (!appData.currentQuestion || !appData.currentQuestion.canBeSkipped) {
+        showFeedback("This Question cannot be Skipped", false);
+        return;
+    }
+    if (!confirm("Skip this question?You may lose points.")) {
+        return;
+    }
+    showLoading(true);
+    skipQuestion(appData.session)
+        .then(function (result) {
+            showLoading(false);
+            appData.score += result.scoreAdjustment || 0;
+            updateSessionInfo();
+            showFeedback("Question Skipped." + (result.scoreAdjustment || 0) + "points", false);
 
+            if (result.completed) {
+                finishHunt();
+                return;
+            }
+            setTimeout(function () {
+                loadNextQuestion();
+            }, 1500);
+        })
+        .catch(function () {
+            showLoading(false);
+            showFeedback("Could not skip question", false);
+        });
+
+}
 //FINISH
 
 

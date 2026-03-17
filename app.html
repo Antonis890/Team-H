@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,136 +8,152 @@
     <link rel="stylesheet" href="css/app.css">
     <script src="js/instascan.min.js"></script>
 </head>
+
 <body>
 
-<!--Header Section-->
-<header class="app-header">
-    <div class="app-header-content">
-        <img src= "media/teamH.png" alt= "logo">
+    <!--Header Section-->
+    <header class="app-header">
+        <div class="app-header-content">
+            <img src="media/teamH.png" alt="logo">
+        </div>
+    </header>
+
+    <div id="sessionInfo" class="session-info hidden">
+        <span id="playerName" class="player-name">Player: </span>
+        <span id="currentScore" class="current-score">Score: 0</span>
+        <button id="leaderboardBtn" class="app-btn app-btn-secondary">Leaderboard</button>
     </div>
-</header>
 
-<div id="sessionInfo" class="session-info hidden">
-    <span id="playerName" class="player-name">Player: </span>
-    <span id="currentScore" class="current-score">Score: 0</span>
-</div>
+    <!--Welcome/Start Section-->
+    <main id="app" class="app-main">
+        <section id="welcome-section" class="app-section active">
+            <div class="app-container">
+                <h2 class="welcome-title">Welcome, Adventurer!</h2>
+                <p>Enter your name and select a treasure hunt to begin your adventure.</p>
 
-<!--Welcome/Start Section-->
-<main id="app" class="app-main">
-    <section id="welcome-section" class="app-section active">
-        <div class="app-container">
-            <h2 class="welcome-title">Welcome, Adventurer!</h2>
-            <p>Enter your name and select a treasure hunt to begin your adventure.</p>
+                <div class="input-group">
+                    <label for="playerNameInput">Player Name:</label>
+                    <input type="text" id="playerNameInput" class="app-input" placeholder="Enter Player Name" required>
+                </div>
 
-            <div class="input-group">
-                <label for="playerNameInput">Player Name:</label>
-                <input type="text" id="playerNameInput" class="app-input" placeholder="Enter Player Name" required>
-            </div>
+                <button id="loadHuntBtn" class="app-btn app-btn-primary">Load Available Hunts</button>
 
-            <button id="loadHuntBtn" class="app-btn app-btn-primary">Load Available Hunts</button>
-
-            <div id="huntSelection" class="hunt-selection hidden">
-                <h3>Select a Treasure Hunt:</h3>
-                <div id="huntList" class="hunt-list">
-                    <p class="loading-text">Loading treasure hunts...</p>
+                <div id="huntSelection" class="hunt-selection hidden">
+                    <h3>Select a Treasure Hunt:</h3>
+                    <div id="huntList" class="hunt-list">
+                        <p class="loading-text">Loading treasure hunts...</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!--Question Section-->
-    <section id="question-section" class="app-section">
-        <div class="location-container">
-            <!-- Location Status (hidden by default) -->
-            <div id="locationStatus" class="location-status hidden">
-                <span id="locationIcon">📍</span>
-                <span id="locationText">Retrieving location...</span>
+        <!--Question Section-->
+        <section id="question-section" class="app-section">
+            <div class="location-container">
+                <!-- Location Status (hidden by default) -->
+                <div id="locationStatus" class="location-status hidden">
+                    <span id="locationIcon">📍</span>
+                    <span id="locationText">Retrieving location...</span>
+                </div>
             </div>
-        </div>
 
             <!--Question Container-->
-        <div id="questionContainer" class="hidden">
-            <div class="question-header">
-                <div class="question-progress">
-                    <span id="questionIndex"></span>
+            <div id="questionContainer" class="hidden">
+                <div class="question-header">
+                    <div class="question-progress">
+                        <span id="questionIndex"></span>
+                    </div>
+                    <div id="questionType" class="question-type-badge"></div>
                 </div>
-                <div id="questionType" class="question-type-badge"></div>
+
+                <h2 id="questionTitle">Question</h2>
+
+                <div id="questionText" class="question-text"></div>
+                <div id="skipInfo" class="skip-info hidden"></div>
+
+                <div id="locationInfo" class="location-info hidden"></div>
+                <div id="questionImage" class="question-image hidden"></div>
+                <div id="answerInputContainer" class="answer-area"></div>
+                <div id="feedback" class="feedback-message hidden"></div>
+
+                <!--Question Buttons-->
+                <div class="button-group">
+                    <button id="submitAnswerBtn" class="app-btn app-btn-primary">Submit Answer</button>
+                    <button id="skipQuestionBtn" class="app-btn app-btn-secondary">Skip Question</button>
+                </div>
             </div>
+        </section>
 
-            <h2 id="questionTitle">Question</h2>
+        <!--Results Section-->
+        <section id="results-section" class="app-section">
+            <div class="app-container">
+                <h2>Hunt Complete!</h2>
 
-            <div id="questionText" class="question-text"></div>
-            <div id="skipInfo" class="skip-info hidden"></div>
+                <div id="finalScoreContainer" class="final-score-container">
+                    <h3>Your Final Score</h3>
+                    <p id="finalScore" class="final-score-number">0</p>
+                </div>
 
-            <div id="locationInfo" class="location-info hidden"></div>
-            <div id="questionImage" class="question-image hidden"></div>
-            <div id="answerInputContainer" class="answer-area"></div>
-            <div id="feedback" class="feedback-message hidden"></div>
+                <div class="leaderboard-section">
+                    <h3>Final Leaderboard</h3>
+                    <div id="resultsLeaderboard" class="leaderboard-display">
+                        <p class="loading-text">Loading leaderboard...</p>
+                    </div>
+                </div>
 
-            <!--Question Buttons-->
-            <div class="button-group">
-                <button id="submitAnswerBtn" class="app-btn app-btn-primary">Submit Answer</button>
-                <button id="skipQuestionBtn" class="app-btn app-btn-secondary">Skip Question</button>
+                <button id="playAgainBtn" class="app-btn app-btn-primary">Play Again</button>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!--Results Section-->
-    <section id="results-section" class="app-section">
-        <div class="app-container">
-            <h2>Hunt Complete!</h2>
-
-            <div id="finalScoreContainer" class="final-score-container">
-                <h3>Your Final Score</h3>
-                <p id="finalScore" class="final-score-number">0</p>
+        <!--Error Section-->
+        <section id="error-section" class="app-section">
+            <div class="app-container">
+                <h2>Error</h2>
+                <p id="errorMessage" class="error-text"></p>
+                <button id="returnHomeBtn" class="app-btn app-btn-primary">Return to Home</button>
             </div>
+        </section>
+    </main>
 
-            <div id="leaderboardContainer" class="leaderboard-section">
+    <!--Loading Overlay-->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <button id="qr-icon" class="hidden" onclick="" aria-label="Scan QR Code">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 100 100" fill="currentColor">
+            <!--Top left square-->
+            <rect x="5" y="5" width="30" height="30" rx="4" fill="none" stroke="currentColor" stroke-width="7" />
+            <rect x="15" y="15" width="10" height="10" />
+            <!--Top right square-->
+            <rect x="65" y="5" width="30" height="30" rx="4" fill="none" stroke="currentColor" stroke-width="7" />
+            <rect x="75" y="15" width="10" height="10" />
+            <!--Bottom left square-->
+            <rect x="5" y="65" width="30" height="30" rx="4" fill="none" stroke="currentColor" stroke-width="7" />
+            <rect x="15" y="75" width="10" height="10" />
+            <!--Dots on the right side-->
+            <rect x="65" y="65" width="8" height="8" />
+            <rect x="78" y="65" width="8" height="8" />
+            <rect x="65" y="78" width="8" height="8" />
+            <rect x="78" y="78" width="8" height="8" />
+        </svg>
+    </button>
+
+    <div id="leaderboardContainer" class="leaderboard-modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
                 <h3>Leaderboard</h3>
-                <div id="leaderboard" class="leaderboard-display">
-                    <p class="loading-text">Loading leaderboard...</p>
-                </div>
+                <button id="closeLeaderboardBtn" class="close-btn">&times;</button>
             </div>
-
-            <button id="playAgainBtn" class="app-btn app-btn-primary">Play Again</button>
+            <div id="leaderboard" class="leaderboard-display">
+                <p class="loading-text">Loading leaderboard...</p>
+            </div>
         </div>
-    </section>
+    </div>
 
-    <!--Error Section-->
-    <section id="error-section" class="app-section">
-        <div class="app-container">
-            <h2>Error</h2>
-            <p id="errorMessage" class="error-text"></p>
-            <button id="returnHomeBtn" class="app-btn app-btn-primary">Return to Home</button>
-        </div>
-    </section>
-</main>
 
-<!--Loading Overlay-->
-<div id="loadingOverlay" class="loading-overlay hidden">
-    <div class="loading-spinner"></div>
-    <p>Loading...</p>
-</div>
-
-<button id="qr-icon" class="hidden" onclick="" aria-label="Scan QR Code">
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 100 100" fill="currentColor">
-        <!--Top left square-->
-        <rect x="5" y="5" width="30" height="30" rx="4" fill="none" stroke="currentColor" stroke-width="7"/>
-        <rect x="15" y="15" width="10" height="10"/>
-        <!--Top right square-->
-        <rect x="65" y="5" width="30" height="30" rx="4" fill="none" stroke="currentColor" stroke-width="7"/>
-        <rect x="75" y="15" width="10" height="10"/>
-        <!--Bottom left square-->
-        <rect x="5" y="65" width="30" height="30" rx="4" fill="none" stroke="currentColor" stroke-width="7"/>
-        <rect x="15" y="75" width="10" height="10"/>
-        <!--Dots on the right side-->
-        <rect x="65" y="65" width="8" height="8"/>
-        <rect x="78" y="65" width="8" height="8"/>
-        <rect x="65" y="78" width="8" height="8"/>
-        <rect x="78" y="78" width="8" height="8"/>
-    </svg>
-</button>
-
-<script src="js/app.js"></script>
+    <script src="js/app.js"></script>
 </body>
+
 </html>

@@ -1,3 +1,25 @@
+document.addEventListener("DOMContentLoaded", function() {
+    // Leaderboard modal events
+    document.getElementById("leaderboardBtn").addEventListener("click", function() {
+        if (appData.session) {
+            getLeaderboard(appData.session, "leaderboard");
+        }
+        document.getElementById("leaderboardContainer").classList.remove("hidden");
+    });
+
+    document.getElementById("closeLeaderboardBtn").addEventListener("click", function() {
+        document.getElementById("leaderboardContainer").classList.add("hidden");
+    });
+
+    // Close modal when clicking outside
+    document.getElementById("leaderboardContainer").addEventListener("click", function(event) {
+        if (event.target === this) {
+            this.classList.add("hidden");
+        }
+    });
+});
+
+
 //API SECTION
 const API_LINK="https://codecyprus.org/th/api";
 const APP_NAME = "webapp";
@@ -69,9 +91,49 @@ function getScore(session){
     return callAPI(url);
 }
 
-function getLeaderboard(session){
-    let url = "leaderboard?session=" + session;
-    return callAPI(url);
+//New functions
+function getLeaderboard(session, containerId = "leaderboard"){
+    let url = "leaderboard?session=" + session + "&sorted&limit=20";
+    return callAPI(url)
+        .then(function(data) {
+            displayLeaderboard(data, containerId);
+            return data;
+        })
+        .catch(function(error) {
+            showFeedback("Could not load leaderboard: " + error.message, false);
+        });
+}
+
+
+
+function displayLeaderboard(data, containerId = "leaderboard") {
+    const leaderboardList = document.getElementById(containerId);
+    if (!leaderboardList) {
+        console.error("Leaderboard element not found: " + containerId);
+        return;
+    }
+
+    leaderboardList.innerHTML = "";
+
+    if (!data.leaderboard || data.leaderboard.length === 0) {
+        leaderboardList.innerHTML = "<p>No players yet</p>";
+        return;
+    }
+
+    for (let i = 0; i < data.leaderboard.length; i++) {
+        const entry = data.leaderboard[i];
+        const rank = i + 1;
+
+        const row = document.createElement("div");
+        row.className = "leaderboard-row";
+
+        row.innerHTML =
+            "<span class='leaderboard-rank'>#" + rank + "</span>" +
+            "<span class='leaderboard-name'>" + entry.player + "</span>" +
+            "<span class='leaderboard-score'>" + entry.score + " pts</span>";
+
+        leaderboardList.appendChild(row);
+    }
 }
 
 //GEOLOCATION
@@ -149,6 +211,7 @@ function loadTreasureHunts(){
         })
         .finally(function(){
             showLoading(false);
+            getLeaderboard(appData.session, "resultsLeaderboard");
         });
 }
 

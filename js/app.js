@@ -93,7 +93,7 @@ function getScore(session){
 
 //New functions
 function getLeaderboard(session, containerId = "leaderboard"){
-    let url = "leaderboard?session=" + session + "&sorted&limit=20";
+    let url = "leaderboard?session=" + session + "&sorted&limit=5000";
     return callAPI(url)
         .then(function(data) {
             displayLeaderboard(data, containerId);

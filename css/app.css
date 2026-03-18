@@ -59,6 +59,13 @@ section {
 
     z-index: 1000;
 }
+
+.app-header-content {
+    width: 55%;
+    margin-left: auto;
+    align-content: center;
+}
+
 @keyframes gradientShift {
     0% {background-position: 0% 50%;}
     50% {background-position: 100% 50%;}
@@ -284,6 +291,14 @@ section {
 
 .app-btn-secondary:active {
     box-shadow: 0 2px 0 #1e0f7a;
+}
+
+
+.app-btn-home {
+    background: rgba(255, 255, 255, 0.08);
+    color: #A7FC47;
+    border: 1px solid rgba(167, 252, 71, 0.35);
+    margin-right: 2%;
 }
 
 /* Input groups */
@@ -515,6 +530,10 @@ section {
     .app-btn {
         width: 100%;
         padding: 10px 14px;
+    }
+    .app-btn-home{
+        width: 15%;
+        margin-right: 5%;
     }
     .input-group input {
         font-size: 14px;

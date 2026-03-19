@@ -474,7 +474,7 @@ function handleSkipQuestion() {
         });
 
 }
-//FINISH
+//FINISH & LEADERBOARD
 
 
 

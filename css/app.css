@@ -479,20 +479,24 @@ section {
 
 @media screen and (max-width: 600px) {
     .app-header {
+        position: fixed;
+        height: 100px;
+        padding: 0;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100px;
-        padding: 0 16px;
-        position: fixed;
+    }
+    .app-header-content {
+        width: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .app-header img {
-        position: relative;
-        left: auto;
-        transform: none;
         max-width: 250px;
-        height: auto;
+        display: block;
     }
 
     .session-info {
@@ -959,4 +963,64 @@ input[type="text"]{
     text-align: center;
     color: #888;
     font-style: italic;
+}
+
+/* option buttons */
+.answer-options {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.option-btn {
+    flex: 1;
+    min-width: 90px;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 800;
+    margin-top: 20px;
+    border-radius: 16px;
+    border: none;
+
+    color: white;
+
+    background: linear-gradient(135deg, #2A169A, #4786fc);
+    box-shadow: 0 6px 16px rgba(42, 22, 154, 0.25);
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+.option-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 22px rgba(42, 22, 154, 0.35);
+}
+
+.option-btn:active {
+    transform: scale(0.95);
+}
+
+.option-btn.selected {
+    background: linear-gradient(135deg, #A7FC47, #7FD62E);
+    color: #2A169A;
+    box-shadow: 0 6px 18px rgba(167, 252, 71, 0.5);
+    transform: scale(1.05);
+}
+
+/* MCQ */
+.mcq-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+/* Mobile */
+@media screen and (max-width: 600px) {
+    .option-btn {
+        font-size: 16px;
+        padding: 14px;
+    }
 }

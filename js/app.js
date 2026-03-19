@@ -302,10 +302,10 @@ function displayQuestion(questionData) {
     }
 
     //title
-    document.getElementById("questionTitle").textContent = (questionData.questionType || "TEXT") + "Question";
+    document.getElementById("questionTitle").textContent = "Question";
 
     //question indicator
-    document.getElementById("questionIndex").textContent = "Question" + (questionData.currentQuestionIndex + 1) + "of" + questionData.numOfQuestions;
+    document.getElementById("questionIndex").textContent = "Question " + (questionData.currentQuestionIndex + 1) + ""+" of "+"" + questionData.numOfQuestions;
 
     // Update question text
     document.getElementById("questionType").textContent = questionData.questionType || "TEXT";

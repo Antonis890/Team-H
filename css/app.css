@@ -298,7 +298,7 @@ section {
     background: rgba(255, 255, 255, 0.08);
     color: #A7FC47;
     border: 1px solid rgba(167, 252, 71, 0.35);
-    margin-right: 2%;
+    margin-right: 3%;
 }
 
 /* Input groups */
@@ -536,8 +536,15 @@ section {
         padding: 10px 14px;
     }
     .app-btn-home{
-        width: 15%;
-        margin-right: 5%;
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: auto;
+
+        padding: 8px 12px;
+        font-size: 14px;
+        margin: 0;
     }
     .input-group input {
         font-size: 14px;

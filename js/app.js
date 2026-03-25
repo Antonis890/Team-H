@@ -1,26 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // Leaderboard modal events
-    document.getElementById("leaderboardBtn").addEventListener("click", function() {
-        if (appData.session) {
-            getLeaderboard(appData.session, "leaderboard");
-        }
-        document.getElementById("leaderboardContainer").classList.remove("hidden");
-    });
-
-    document.getElementById("closeLeaderboardBtn").addEventListener("click", function() {
-        document.getElementById("leaderboardContainer").classList.add("hidden");
-    });
-
-    // Close modal when clicking outside
-    document.getElementById("leaderboardContainer").addEventListener("click", function(event) {
-        if (event.target === this) {
-            this.classList.add("hidden");
-        }
-    });
-});
-
-
-//API SECTION
+//CONSTANTS
 const API_LINK="https://codecyprus.org/th/api";
 const APP_NAME = "webapp";
 const LOCATION_COOLDOWN = 30000; //30 seconds, used to refresh location
@@ -33,10 +11,9 @@ const appData = {
     currentQuestion: null,
     myLocation: { latitude: null, longitude: null },
     score: 0,
-    isPlaying: false
 };
 
-let lastLocationUpdate = 0;
+let locationIntervalId = null;
 let qrScanner = null;
 
 //API FUNCTIONS
@@ -73,66 +50,111 @@ function getQuestion(session){
     return callAPI(url)
 }
 
+//submit an answer with coordinates
 function submitAnswer(session, answer){
     let url = "answer?session=" + session + "&answer=" + encodeURIComponent(answer);
     if (appData.myLocation.latitude && appData.myLocation.longitude) {
-        url += "&location=" + appData.myLocation.latitude + "&location=" + appData.myLocation.longitude;
+        url += "&latitude=" + appData.myLocation.latitude + "&longitude=" + appData.myLocation.longitude;
     }
     return callAPI(url);
 }
 
+//skip a question
 function skipQuestion(session){
     let url = "skip?session=" + session;
     return callAPI(url);
 }
 
+//get the score
 function getScore(session){
     let url = "score?session=" + session;
     return callAPI(url);
 }
 
-//New functions
-function getLeaderboard(session, containerId = "leaderboard"){
-    let url = "leaderboard?session=" + session + "&sorted&limit=5000";
+//get leaderboard
+function getLeaderboard(session){
+    let url = "leaderboard?session=" + session + "&sorted&limit=1000";
     return callAPI(url)
-        .then(function(data) {
-            displayLeaderboard(data, containerId);
-            return data;
-        })
-        .catch(function(error) {
-            showFeedback("Could not load leaderboard: " + error.message, false);
-        });
 }
 
-
-
-function displayLeaderboard(data, containerId = "leaderboard") {
-    const leaderboardList = document.getElementById(containerId);
-    if (!leaderboardList) {
-        console.error("Leaderboard element not found: " + containerId);
+//sends the player's current coordinates
+function sendLocationUpdate(){
+    if (!appData.session || !appData.myLocation.latitude || !appData.myLocation.longitude) {
         return;
     }
+    let url = "location?session=" + appData.session + "&latitude=" + appData.myLocation.latitude + "&longitude=" + appData.myLocation.longitude;
+    return callAPI(url);
+}
 
-    leaderboardList.innerHTML = "";
+//COOKIE FUNCTIONS
+//Set a cookie with a name, value and expiration date
+function setCookie(cName, cValue, exDays) {
+    const date = new Date();
+    date.setTime(date.getTime() + (exDays * 24 * 60 * 60 * 1000));
+    let expires = "expires=" + date.toUTCString();
+    document.cookie = cName + "=" + cValue + ";" + expires + ";path=/";
+}
 
-    if (!data.leaderboard || data.leaderboard.length === 0) {
-        leaderboardList.innerHTML = "<p>No players yet</p>";
-        return;
+//Get a cooke value by name
+function getCookie(cName){
+    let name = cName + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
     }
+    return"";
+}
 
-    for (let i = 0; i < data.leaderboard.length; i++) {
-        const entry = data.leaderboard[i];
-        const rank = i + 1;
+//delete a cookie by setting expiration date to -1 days
+function deleteCookie(cName){
+    setCookie(cName, "", -1);
+}
 
-        const row = document.createElement("div");
-        row.className = "leaderboard-row";
+//save session data to cookies
+function saveSessionCookies(){
+    setCookie("session", appData.session, 1/12);
+    setCookie("playerName", appData.playerName, 1/12);
+    setCookie("score", appData.score, 1/12);
+    setCookie("huntName", appData.currentHunt ? appData.currentHunt.name : "", 1/12);
+}
 
-        row.innerHTML =
-            "<span class='leaderboard-rank'>#" + rank + "</span>" +
-            "<span class='leaderboard-name'>" + entry.player + "</span>" +
-            "<span class='leaderboard-score'>" + entry.score + " pts</span>";
+//Clear all session cookies
+function clearSessionCookies(){
+    deleteCookie("session");
+    deleteCookie("playerName");
+    deleteCookie("score");
+    deleteCookie("huntName");
+}
 
-        leaderboardList.appendChild(row);
+//Check for saved session
+function checkSavedSession(){
+    let savedSession = getCookie("session");
+    let savedName = getCookie("playerName");
+    let savedScore = getCookie("score");
+    let savedHunt = getCookie("huntName");
+
+    if (savedSession && savedName){
+        var resume = confirm("Welcome back, " + savedName + "!\n" + "You have an unfinished game" + "\n" +
+        "Score: " + savedScore + "points\n" + "Would you like to resume where you left off?");
+        if (resume){
+            appData.session = savedSession;
+            appData.playerName = savedName;
+            appData.score = Number(savedScore);
+            appData.currentHunt = {name:savedHunt};
+            updateSessionInfo();
+            requestLocationPermission();
+            startLocationTracking();
+            loadNextQuestion();
+        } else {
+            clearSessionCookies();
+        }
     }
 }
 
@@ -143,36 +165,31 @@ function requestLocationPermission(){
         showFeedback("Geolocation is not supported on this device",false);
         return;
     }
+    showLocationStatus("Getting your location...", false);
     navigator.geolocation.getCurrentPosition(
         function(position) {
             appData.myLocation.latitude = position.coords.latitude;
             appData.myLocation.longitude = position.coords.longitude;
-            lastLocationUpdate = Date.now();
-            console.log("Location granted:", appData.myLocation);
+            showLocationStatus("Location acquired.", true);
             },
-        function (error){
-            console.log("Location error:",error);
-            showFeedback("Location access denied, some questions may not work correctly",false);
+        function (){
+            showLocationStatus("Location access denied.", false);
         }
     );
 }
 
-//Refresh location every 30 seconds
-function tryUpdateLocation(){
+//Refresh the stored coordinates
+//Will be called by setInterval every 30 seconds
+function updateLocation(){
     if (!navigator.geolocation) {
-        return;
-    }
-    let now = Date.now();
-    if (now - lastLocationUpdate < LOCATION_COOLDOWN) {
-        console.log("Location cooldown active, using stored coordinates");
         return;
     }
     navigator.geolocation.getCurrentPosition(
         function(position) {
-            appData.myLocation.latitude = position.coords.latitude;    //needs fix today!!!!
+            appData.myLocation.latitude = position.coords.latitude;
             appData.myLocation.longitude = position.coords.longitude;
-            lastLocationUpdate = Date.now();
-            showLocationStatus("Location updated", true);
+            console.log("Location updated: " + appData.myLocation.latitude + "," + appData.myLocation.longitude);
+            sendLocationUpdate();
             },
         function(){
             showLocationStatus("Location unavailable",false);
@@ -180,18 +197,40 @@ function tryUpdateLocation(){
     );
 }
 
-function showLocationStatus(message,isSuccess){
-    const locationText = document.getElementById("locationText");
-    const locationIcon = document.getElementById("locationIcon");
-    if (locationText) {
-        locationText.textContent = message;
+//Start sending location every 30 seconds
+function startLocationTracking(){
+    locationIntervalId = setInterval(updateLocation, LOCATION_COOLDOWN)
+}
+
+//stop the collecting locations
+function stopLocationTracking(){
+    if (locationIntervalId != null) {
+        clearInterval(locationIntervalId);
+        locationIntervalId = null;
     }
-    if (locationIcon) {
-        locationIcon.textContent = isSuccess ? "📍" : "❌";
+    //hide the status bar
+    let statusBar = document.getElementById("locationStatus");
+    if(statusBar){
+        statusBar.classList.add("hidden");
     }
 }
 
+//This function refreshes coordinates used just before submitting
+function refreshCoordinates(){
+    if(!navigator.geolocation){
+        return;
+    }
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            appData.myLocation.latitude = position.coords.latitude;
+            appData.myLocation.longitude = position.coords.longitude;
+        },
+        function(){}
+    );
+}
+
 //HUNT SELECTION
+//Validate player name and get hunt list
 function loadTreasureHunts(){
     const playerName = document.getElementById("playerNameInput").value.trim();
     if (!playerName) {
@@ -205,16 +244,15 @@ function loadTreasureHunts(){
         .then(function(data){
             displayHuntList(data.treasureHunts);
             document.getElementById("huntSelection").classList.remove("hidden");
+            showLoading(false);
         })
         .catch(function(){
             showFeedback("Could not load treasure hunts", false);
-        })
-        .finally(function(){
             showLoading(false);
-            getLeaderboard(appData.session, "resultsLeaderboard");
         });
 }
 
+//Create the list of available hunts
 function displayHuntList(hunts){
     const huntList = document.getElementById("huntList");
     huntList.innerHTML = "";
@@ -237,7 +275,16 @@ function displayHuntList(hunts){
     }
 }
 
+//Start a session for the hunt - asks for cookies consent
 function selectHunt(huntId, huntName){
+    var consent = getCookie("consent");
+    if (!consent) {
+        var accepted = confirm("This app uses cookies to save your in game progress,\n" + "Do you accept?");
+        if (accepted) {
+            setCookie("consent", "true", 1);
+        }
+    }
+
     showLoading(true);
 
     startSession(appData.playerName, huntId)
@@ -247,30 +294,26 @@ function selectHunt(huntId, huntName){
             }
             appData.session = data.session;
             appData.currentHunt = { id: huntId, name: huntName};
-            appData.isPlaying = true;
             updateSessionInfo();
 
-            const locationStatus = document.getElementById("locationStatus");
-            if (locationStatus) {
-                locationStatus.classList.remove("hidden");
+            if (getCookie("consent")) {
+                saveSessionCookies();
             }
-            showLocationStatus("Waiting for location...", false);
             requestLocationPermission();
-
+            startLocationTracking();
+            showLoading(false);
             return loadNextQuestion();
         })
         .catch(function(error){
-            showError("Could not start hunt: " + error.message);
-        })
-        .finally(function(){
             showLoading(false);
+            showError("Could not start hunt: " + error.message);
         });
 }
 
 //QUESTIONS
-   function loadNextQuestion(){
+//Fetch next question
+function loadNextQuestion(){
     showLoading(true);
-
     return getQuestion(appData.session)
         .then(function(data) {
             showLoading(false);
@@ -279,10 +322,6 @@ function selectHunt(huntId, huntName){
                 return;
             }
             appData.currentQuestion = data;
-            if (data.currentScore !== undefined) {
-                appData.score = data.currentScore;
-                updateSessionInfo();
-            }
             displayQuestion(data);
             showSection("question-section");
         })
@@ -290,13 +329,13 @@ function selectHunt(huntId, huntName){
            showLoading(false);
            showError("Could not start hunt: " + error.message);
        });
-
 }
+
 //Display question in the UI
 function displayQuestion(questionData) {
     const questionDiv = document.getElementById("questionText");
     questionDiv.innerHTML = questionData.questionText || "No question text";
-    const links = questionDiv.querySelectorAll("a");
+    let links = questionDiv.querySelectorAll("a");
     for (let i = 0; i < links.length; i++) {
         links[i].setAttribute("target", "_blank");
     }
@@ -305,30 +344,23 @@ function displayQuestion(questionData) {
     document.getElementById("questionTitle").textContent = "Question";
 
     //question indicator
-    document.getElementById("questionIndex").textContent = "Question " + (questionData.currentQuestionIndex + 1) + ""+" of "+"" + questionData.numOfQuestions;
+    document.getElementById("questionIndex").textContent = "Question " + (questionData.currentQuestionIndex + 1) + " of " + questionData.numOfQuestions;
 
     // Update question text
     document.getElementById("questionType").textContent = questionData.questionType || "TEXT";
 
     //skip warning
-    const skipInfo = document.getElementById("skipInfo");
+    let skipInfo = document.getElementById("skipInfo");
     if (questionData.canBeSkipped) {
-        skipInfo.textContent = "Skip penalty:" + questionData.skipScore + "pts";
+        skipInfo.textContent = "Skip penalty: " + questionData.skipScore + "pts";
         skipInfo.classList.remove("hidden");
     } else {
         skipInfo.classList.add("hidden");
     }
 
-    //location warning
-    const locationInfo = document.getElementById("locationInfo");
-    if (questionData.requiresLocation) {
-        locationInfo.textContent = "📍 This question checks that you are in the right place, make sure the location is enabled";
-        locationInfo.classList.remove("hidden");
-    } else {
-        locationInfo.classList.add("hidden");
-    }
     //answer input
     createAnswerInput(questionData);
+
     //skip button
     const skipBtn = document.getElementById("skipQuestionBtn");
     if (questionData.canBeSkipped === false){
@@ -355,7 +387,7 @@ function createAnswerInput(questionData) {
 
         case "BOOLEAN":
             container.innerHTML = "<div class='answer-options'>" + "<button class ='option-btn'onclick='selectAnswer(this,\"True\")'>True</button>"
-                + "<button class = 'option-btn' onclick='selectAnswer(this,\"false\")'>False</button>"
+                + "<button class = 'option-btn' onclick='selectAnswer(this,\"False\")'>False</button>"
                 + "</div>";
             break;
 
@@ -383,7 +415,7 @@ function createAnswerInput(questionData) {
             break;
     }
 }
-function selectAnswer(button,answer){
+function selectAnswer(button, answer){
     const buttons = document.querySelectorAll(".option-btn");
     for (let i = 0; i < buttons.length; i++) {
         buttons[i].classList.remove("selected");
@@ -406,8 +438,13 @@ function handleSubmitAnswer() {
         return;
     }
 
-    //refresh location every 30 seconds
-    tryUpdateLocation();
+    //use stored coordinates before submitting
+    refreshCoordinates();
+
+    //if the question requires location, show a message
+    if (appData.currentQuestion && appData.currentQuestion.requiresLocation) {
+        showLocationUpdate();
+    }
 
     showLoading(true);
 
@@ -415,50 +452,71 @@ function handleSubmitAnswer() {
         .then(function (result) {
             showLoading(false);
 
-            let isCorrect = false;
             if (result.correct === true) {
-                isCorrect = true;
-            }
-            if (isCorrect) {
-                appData.score += result.scoreAdjustment;
-                showFeedback("Correct!+" + result.scoreAdjustment + "points", true);
-
+                showFeedback(result.message || "Correct!", true);
             } else {
-                appData.score += result.scoreAdjustment;
-                showFeedback("Wrong Answer.+" + result.scoreAdjustment + "points", false);
+                showFeedback(result.message || "Wrong answer.", false);
             }
-            updateSessionInfo();
             window.selectedAnswer = null;
 
             if (result.completed) {
                 finishHunt();
                 return;
             }
-            // 2 seconds for the user to read feedback
+
+            //get the score
+            getScore(appData.session)
+                .then(function(scoreData) {
+                    appData.score = scoreData.score;
+                    updateSessionInfo();
+                    if (getCookie("consent")) {
+                        saveSessionCookies();
+                    }
+                })
+                .catch(function(){
+                    //if API fails use local calculation
+                    appData.score += result.scoreAdjustment;
+                    updateSessionInfo();
+                });
+            // 3.5 seconds for the user to read feedback
             setTimeout(function () {
                 loadNextQuestion();
-            }, 2000);
+            }, 3500);
         })
         .catch(function () {
             showLoading(false);
-            showFeedback("Could not submit answer", false);
+            showFeedback("Could not submit answer. Please try again.", false);
         });
 }
+
 function handleSkipQuestion() {
     if (!appData.currentQuestion || !appData.currentQuestion.canBeSkipped) {
         showFeedback("This Question cannot be Skipped", false);
         return;
     }
-    if (!confirm("Skip this question?You may lose points.")) {
+    if (!confirm("Skip this question? You may lose points.")) {
         return;
     }
     showLoading(true);
     skipQuestion(appData.session)
         .then(function (result) {
             showLoading(false);
-            appData.score += result.scoreAdjustment || 0;
-            updateSessionInfo();
-            showFeedback("Question Skipped." + (result.scoreAdjustment || 0) + "points", false);
+            showFeedback("Question skipped.", false);
+
+            //get score after skip
+            getScore(appData.session)
+                .then(function(scoreData) {
+                    appData.score = scoreData.score;
+                    updateSessionInfo();
+                    if (getCookie("consent")) {
+                        saveSessionCookies();
+                    }
+                })
+                .catch(function () {
+                    //if API fails use local calculation
+                    appData.score += result.scoreAdjustment || 0;
+                    updateSessionInfo();
+                });
 
             if (result.completed) {
                 finishHunt();
@@ -466,7 +524,7 @@ function handleSkipQuestion() {
             }
             setTimeout(function () {
                 loadNextQuestion();
-            }, 1500);
+            }, 3500);
         })
         .catch(function () {
             showLoading(false);
@@ -474,18 +532,97 @@ function handleSkipQuestion() {
         });
 
 }
-//FINISH & LEADERBOARD
+//FINISH HUNT
+function finishHunt() {
+    //stop location tracking
+    stopLocationTracking();
+    //clear cookies
+    clearSessionCookies();
+    //Get display for final leaderboard
+    showLoading(true);
+    getLeaderboard(appData.session)
+        .then(function(data){
+            displayLeaderboard(data, "resultsLeaderboard");
+            showLoading(false);
+            showSection("results-section");
+        })
+        .catch(function () {
+            showLoading(false);
+            showSection("results-section");
+        });
+}
 
+//LEADERBOARD
+function displayLeaderboard(data, containerId) {
+    const leaderboardList = document.getElementById(containerId);
+    if (!leaderboardList) {
+        return;
+    }
 
+    leaderboardList.innerHTML = "";
+
+    if (!data.leaderboard || data.leaderboard.length === 0) {
+        leaderboardList.innerHTML = "<p>No players yet</p>";
+        return;
+    }
+
+    for (let i = 0; i < data.leaderboard.length; i++) {
+        const entry = data.leaderboard[i];
+        const rank = i + 1;
+
+        const row = document.createElement("div");
+        row.className = "leaderboard-row";
+
+        row.innerHTML =
+            "<span class='leaderboard-rank'>#" + rank + "</span>" +
+            "<span class='leaderboard-name'>" + entry.player + "</span>" +
+            "<span class='leaderboard-score'>" + entry.score + " pts</span>";
+
+        leaderboardList.appendChild(row);
+    }
+}
+
+//LEADERBOARD MODAL
+document.addEventListener("DOMContentLoaded", function() {
+    // Leaderboard modal events
+    document.getElementById("leaderboardBtn").addEventListener("click", function() {
+        if (appData.session) {
+            getScore(appData.session)
+                .then(function(scoreData) {
+                    appData.score = scoreData.score;
+                    updateSessionInfo();
+                })
+            getLeaderboard(appData.session)
+                .then(function(data) {
+                    displayLeaderboard(data, "leaderboard");
+                })
+                .catch(function () {
+                    console.log("Could not load leaderboard.");
+                });
+        }
+        document.getElementById("leaderboardContainer").classList.remove("hidden");
+    });
+
+    //add a close button
+    document.getElementById("closeLeaderboardBtn").addEventListener("click", function() {
+        document.getElementById("leaderboardContainer").classList.add("hidden");
+    });
+
+    // Close modal when clicking outside
+    document.getElementById("leaderboardContainer").addEventListener("click", function(event) {
+        if (event.target === this) {
+            this.classList.add("hidden");
+        }
+    });
+});
 
 //RESET
 function resetApp(){
-    lastLocationUpdate = 0;
+    stopLocationTracking();
     appData.session = null;
     appData.currentHunt= null;
     appData.currentQuestion = null;
     appData.score = 0;
-    appData.isPlaying = false;
     appData.myLocation.latitude = null;
     appData.myLocation.longitude = null;
     window.selectedAnswer = null;
@@ -497,6 +634,41 @@ function resetApp(){
 }
 
 //HELPER FUNCTIONS
+
+//shows the current stat of location
+function showLocationStatus(message, isSuccess) {
+    let statusBar = document.getElementById("locationStatus");
+    let statusText = document.getElementById("locationText");
+    let statusIcon = document.getElementById("locationIcon");
+
+    if (!statusBar || !statusText || !statusIcon) {
+        return;
+    }
+    statusText.textContent = message;
+    statusIcon.textContent = isSuccess ? "📍" : "❌";
+    statusBar.classList.remove("hidden");
+}
+
+//notification that fades after 4 seconds
+function showLocationUpdate() {
+    let locationUpdate = document.getElementById("locationUpdate");
+    if (!locationUpdate) {
+        return;
+    }
+    //remove any existing fade timer
+    if (showLocationUpdate.fadeTimer) {
+        clearTimeout(showLocationUpdate.fadeTimer);
+    }
+    locationUpdate.classList.remove("hidden", "fading");
+    showLocationUpdate.fadeTimer = setTimeout(function () {
+        locationUpdate.classList.add("fading");
+        //hide after css transition of 0.4 seconds complete
+        setTimeout(function () {
+            locationUpdate.classList.add("hidden");
+            locationUpdate.classList.remove("fading");
+        }, 400);
+    }, 4000);
+}
 
 //Show specific sections
 function showSection(sectionId){
@@ -545,7 +717,7 @@ function showFeedback(message, isSuccess){
     }
     setTimeout(function(){
         feedback.classList.add("hidden");
-    }, 3000);
+    }, 3500);
 }
 
 //Update session info in the header
@@ -571,6 +743,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("playAgainBtn").addEventListener("click", resetApp);
     document.getElementById("returnHomeBtn").addEventListener("click", resetApp);
     showSection("welcome-section");
+    checkSavedSession();
 })
 
 window.selectHunt = selectHunt;

@@ -20,6 +20,7 @@
                 onclick="window.location.href='index.html';">Home</button>
     </header>
 
+    <!--Session information bar-->
     <div id="sessionInfo" class="session-info hidden">
         <span id="playerName" class="player-name">Player: </span>
         <span id="currentScore" class="current-score">Score: 0</span>
@@ -57,6 +58,9 @@
                     <span id="locationIcon">📍</span>
                     <span id="locationText">Retrieving location...</span>
                 </div>
+                <div id="locationUpdate" class="location-update hidden">
+                    📍 Location updated
+                </div>
             </div>
 
             <!--Question Container-->
@@ -72,9 +76,6 @@
 
                 <div id="questionText" class="question-text"></div>
                 <div id="skipInfo" class="skip-info hidden"></div>
-
-                <div id="locationInfo" class="location-info hidden"></div>
-                <div id="questionImage" class="question-image hidden"></div>
                 <div id="answerInputContainer" class="answer-area"></div>
                 <div id="feedback" class="feedback-message hidden"></div>
 
@@ -89,11 +90,8 @@
         <!--Results Section-->
         <section id="results-section" class="app-section">
             <div class="app-container">
-                <h2>Hunt Complete!</h2>
-
-                <div id="finalScoreContainer" class="final-score-container">
-                    <h3>Your Final Score</h3>
-                    <p id="finalScore" class="final-score-number">0</p>
+                <div class="hunt-complete-banner">
+                    Hunt Complete!
                 </div>
 
                 <div class="leaderboard-section">
@@ -110,7 +108,7 @@
         <!--Error Section-->
         <section id="error-section" class="app-section">
             <div class="app-container">
-                <h2>Error</h2>
+                <h2>Something went wrong</h2>
                 <p id="errorMessage" class="error-text"></p>
                 <button id="returnHomeBtn" class="app-btn app-btn-primary">Return to Home</button>
             </div>

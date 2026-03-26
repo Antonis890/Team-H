@@ -1,27 +1,51 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Leaderboard test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing</title>
 </head>
 <body>
-<!--LIST-->
+<nav>
+    <a href="index.html">Home</a>
+    <a href="app.html">Play the app</a>
+    <a href="notes.html">Notes</a>
+</nav>
 
+<h1>Testing</h1>
+<p>
+    This page documents the testing effort carried out by teamH on the Code Cyprus Treasure Hunt web application. <br>
+    It is split into three parts:<br>
+    Unit Testing (verifies using the API),<br>
+    User Testing (validation),<br>
+    Nielsen's Heuristics<br>
+</p>
+
+<!--Section 1 - Unit Testing-->
+<h2>
+    1. Unit Testing
+</h2>
+<p>
+    The testing API which is provided at <a href="https://codecyprus.org/th/testing" target="_blank">codecyprus.org/th/testing</a>
+</p>
+
+<!--LIST-->
+<h3>Test 1 - list</h3>
 
 <!--START-->
-
+<h3>test 2 - start</h3>
 
 <!--QUESTION-->
-
+<h3>test 3 - question</h3>
 
 <!--ANSWER-->
-
+<h3>test 4 - answer</h3>
 
 <!--SCORE-->
-
+<h3>test 5 - score</h3>
 
 <!--LEADERBOARD-->
+<h3>test 6 - leaderboard</h3>
 <p>Enter input:</p>
 
 <form action="javascript:getLeaderboard()">
@@ -42,23 +66,30 @@
   </tr>
 </table>
 
+<!--Section 2 - User Testing -->
+<h2>2. User Testing</h2>
+
+<!--Section 3 Nielsen's Heuristics-->
+<h2>3. Nielsen's Heuristics - Usability</h2>
+
 <script>
-    //LIST
+    let TEST_API_LINK = "https://codecyprus.org/th/test-api";
+    //Test 1: list
 
 
-    //START
+    //Test 2: start
 
 
-    //QUESTION
+    //test 3: question
 
 
-    //ANSWER
+    //Test 4: answer
 
 
-    //SCORE
+    //Test 5: score
 
 
-    //LEADERBOARD
+    //Test 6: leaderboard
   const testResultsTable = document.getElementById('test-results-table');
 
   testPairs = [
@@ -112,14 +143,9 @@
               "</tr>";
     }
 
-
-
     testResultsTable.innerHTML += html;
-
   }
-
   getLeaderboard();
-
 </script>
 </body>
 </html>

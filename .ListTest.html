@@ -6,146 +6,104 @@
     <title>Testing</title>
 </head>
 <body>
+
 <nav>
     <a href="index.html">Home</a>
     <a href="app.html">Play the app</a>
     <a href="notes.html">Notes</a>
 </nav>
 
-<h1>Testing</h1>
+<h1>Testing Treasure Hunts (List API)</h1>
+
 <p>
-    This page documents the testing effort carried out by teamH on the Code Cyprus Treasure Hunt web application. <br>
-    It is split into three parts:<br>
-    Unit Testing (verifies using the API),<br>
-    User Testing (validation),<br>
-    Nielsen's Heuristics<br>
+    API:
+    <a href="https://codecyprus.org/th/api/list" target="_blank">
+        codecyprus.org/th/api/list
+    </a>
 </p>
 
-<!--Section 1 - Unit Testing-->
-<h2>
-    1. Unit Testing
-</h2>
-<p>
-    The testing API which is provided at <a href="https://codecyprus.org/th/testing" target="_blank">codecyprus.org/th/testing</a>
-</p>
+<p>Enter number of treasure hunts:</p>
 
-<!--LIST-->
-<h3>Test 1 - list</h3>
-
-<!--START-->
-<h3>test 2 - start</h3>
-
-<!--QUESTION-->
-<h3>test 3 - question</h3>
-
-<!--ANSWER-->
-<h3>test 4 - answer</h3>
-
-<!--SCORE-->
-<h3>test 5 - score</h3>
-
-<!--LEADERBOARD-->
-<h3>test 6 - leaderboard</h3>
-<p>Enter input:</p>
-
-<form action="javascript:getLeaderboard()">
-    <input type="number" id="size" />
-    <button id="submit">Submit</button>
+<form onsubmit="getTreasureHunts(); return false;">
+    <input type="number" id="size" value="2" />
+    <button type="submit">Submit</button>
 </form>
+
+<br>
 
 <table id="test-results-table" border="1">
     <tr>
-        <!--    <th>Input</th>-->
-        <th>Expected leaderboard size</th>
-        <th>Computed leaderboard size</th>
-        <th>Expected numOfPlayers</th>
-        <th>Computed numOfPlayers</th>
-        <th>Expected status</th>
-        <th>Computed status</th>
+        <th>Expected Name</th>
+        <th>Computed Name</th>
+        <th>Expected Description</th>
+        <th>Computed Description</th>
+        <th>Expected Status</th>
+        <th>Computed Status</th>
         <th>Pass/Fail</th>
     </tr>
 </table>
 
-<!--Section 2 - User Testing -->
-<h2>2. User Testing</h2>
-
-<!--Section 3 Nielsen's Heuristics-->
-<h2>3. Nielsen's Heuristics - Usability</h2>
-
 <script>
-    let TEST_API_LINK = "https://codecyprus.org/th/test-api";
-    //Test 1: list
+    let API_URL = "https://codecyprus.org/th/api/list";
+    const table = document.getElementById("test-results-table");
+
+    // i made the first name and description match with the computed one
+     testPairs = [
+        { name: "⚔️ CO1111 Treasure Hunt 2026 ⚔️", description: "The Computing Challenge Treasure Hunt - 2026", status: "OK" },
+        { name: "Treasure Hunt 2", description: "Test hunt", status: "OK" }
+    ];
+
+    function buildURL(size) {
+        return API_URL + "?number-of-ths=" + encodeURIComponent(size);
+    }
+
+    async function getTreasureHunts() {
+        const size = document.getElementById("size").value;
 
 
-    //Test 2: start
+            let response = await fetch(buildURL(size));
+            let data = await response.json();
+
+            console.log(data);
 
 
-    //test 3: question
+            let hunts = data.treasureHunts;
 
-
-    //Test 4: answer
-
-
-    //Test 5: score
-
-
-    //Test 6: leaderboard
-    const testResultsTable = document.getElementById('test-results-table');
-
-    testPairs = [
-        { size: 1, leaderboardSize: 1, numOfPlayers: 1, status: "OK" },
-        { size: 3, leaderboardSize: 3, numOfPlayers: 3, status: "OK" },
-        { size: -1, leaderboardSize: 42, numOfPlayers: 42, status: "OK" },
-    ]
-
-    async function getLeaderboard() {
-        const sizeField = document.getElementById('size');
-        const size = Number(sizeField.value);
         let html = "";
 
-        for (let pair of testPairs) {
-            const response = await fetch(`https://codecyprus.org/th/test-api/leaderboard?size=${pair.size}`);
-            const json = await response.json();
-            const status = json.status;
-            const leaderboardSize = json.leaderboard.length;
-            const numOfPlayers = json.numOfPlayers;
+        for (let i = 0; i < testPairs.length; i++) {
 
-            // console.log(pair.size);
-            // console.log(pair.numOfPlayers);
-            // console.log(pair.status);
+            let expected = testPairs[i];
+            let actual = hunts[i];
 
-            // console.log(pair);
+            if (!actual) continue;
+
+            const name = actual.name;
+            const description = actual.description;
+            const status = data.status;
 
             let success = true;
-            if (status !== pair.status) {
-                success = false;
-            }
-            if (leaderboardSize !== pair.leaderboardSize) {
-                success = false;
-            }
-            if (numOfPlayers !== pair.numOfPlayers) {
-                success = false;
-            }
 
-            // console.log(status);
-            // console.log(leaderboardSize);
-            // console.log(numOfPlayers);
+            if (name !== expected.name) success = false;
+            if (description !== expected.description) success = false;
+            if (status !== expected.status) success = false;
 
             html += "<tr>" +
-                // "    <td>" + size + "</td>\n" +
-                "    <td>" + pair.leaderboardSize + "</td>\n" +
-                "    <td>" + leaderboardSize + "</td>\n" +
-                "    <td>" + pair.numOfPlayers + "</td>\n" +
-                "    <td>" + numOfPlayers +"</td>\n" +
-                "    <td>" + pair.status + "</td>\n" +
+                "    <td>" + expected.name + "</td>\n" +
+                "    <td>" + name + "</td>\n" +
+                "    <td>" + expected.description + "</td>\n" +
+                "    <td>" + description + "</td>\n" +
+                "    <td>" + expected.status + "</td>\n" +
                 "    <td>" + status + "</td>\n" +
                 "    <td>" + (success ? "✅" : "❌") + "</td>" +
                 "</tr>";
         }
 
-        testResultsTable.innerHTML += html;
+        table.innerHTML += html;
+
+
     }
-    getLeaderboard();
+    //getTreasureHunts(); i tried running it without the button but it didnt work :(
 </script>
 </body>
 </html>

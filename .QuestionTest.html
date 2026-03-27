@@ -58,20 +58,6 @@
         return TEST_API_LINK + "?" + parameters.join("&");
     }
 
-    function summeriseQuestion(json) {
-
-        const qType = json.questionType;
-        const canBeSkipped = json.canBeSkipped;
-        const requiresLocation = json.requiresLocation;
-        const status = json.status;
-        return {
-            questionType: qType,
-            canBeSkipped: canBeSkipped,
-            requiresLocation: requiresLocation,
-            status: status
-        };
-    }
-
     async function runTests() {
 
         let rowsHtml = "";
@@ -81,7 +67,6 @@
             //const call = await fetch(`https://codecyprus.org/th/test-api/question?completed&question-type=${pair.questionType}&can-be-skipped&requires-location`);
             const call = questionCall(pair);
             const json = await (await fetch(call)).json();
-            const comp = summeriseQuestion(json);
             const questionType = json.questionType;
             const canBeSkipped = json.canBeSkipped;
             const requiresLocation = json.requiresLocation;

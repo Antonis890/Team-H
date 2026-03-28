@@ -11,6 +11,7 @@ body {
 section {
     background: white;
     border-radius: 16px;
+    /* All box-shadows was generated with this website: https://active-vision.ru/icon/box-shadow/ */
     box-shadow: 0 8px 20px rgba(42, 22, 154, 0.08);
 }
 
@@ -18,7 +19,6 @@ section {
 .header {
     position: relative;
     height: 100px;
-
     background-color: #2A169A;
     color: #A7FC47;
     display: flex;
@@ -57,27 +57,25 @@ body.menu-open {
     overflow: hidden;
     touch-action: none;
 }
+
 .icon {
     position: absolute;
     width: 40px;
     height: 40px;
-
     display: none;
     align-items: center;
     justify-content: center;
 }
+
 .close-icon {
     position: absolute;
     inset: 0;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     font-size: 32px;
     font-weight: 700;
     color: #A7FC47;
-
     opacity: 0;
     pointer-events: none;
 }
@@ -90,6 +88,7 @@ body.menu-open .close-icon {
 body.menu-open .menu_icon {
     opacity: 0;
 }
+
 .menu-mobile {
     display: none;
 }
@@ -104,15 +103,13 @@ body.menu-open .menu_icon {
         left: 0;
         right: 0;
         bottom: 0;
-
         transform: translateX(100%);
+        /* All transition was found here: https://doka-guide.vercel.app/css/transition/ */
         transition: transform 0.35s ease;
         z-index: 1000;
-
         display: flex;
         flex-direction: column;
         padding-top: 30px;
-
 
         background-color: #F6F4FB;
         border-top-left-radius: 20px;
@@ -149,13 +146,12 @@ body.menu-open .menu_icon {
         font-weight: 700;
         color: #2A169A;
         text-decoration: none;
-
         border-radius: 12px;
         border: 2px solid rgba(42, 22, 154, 0.15);
         margin: 8px 16px;
+        /* https://doka-guide.vercel.app/css/linear-gradient/ */
         background: linear-gradient(120deg, #F6F4FB, #E8E5FF);
         box-shadow: 0 4px 12px rgba(42, 22, 154, 0.12);
-
         transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
     }
 
@@ -170,12 +166,13 @@ body.menu-open .menu_icon {
     .menu.responsive a {
         opacity: 0;
         transform: translateX(40px);
+        /* https://www.quackit.com/css/animations/examples/css_animation_staggered_list_slide.cfm */
         animation: slideIn 0.4s forwards;
     }
 
     .menu.responsive a:nth-child(1) { animation-delay: 0.05s; }
     .menu.responsive a:nth-child(2) { animation-delay: 0.1s; }
-
+    /* Found here: https://medium.com/@sikirus81/adding-dynamic-elements-with-css-animations-2d450526af2a */
     @keyframes slideIn {
         to {
             opacity: 1;
@@ -204,6 +201,9 @@ body.menu-open .menu_icon {
 .title {
     font-weight: 800;
     color: #2A169A;
+    /* https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/text-shadow
+    and
+    https://www.w3schools.com/colors/colors_rgb.asp */
     text-shadow:
             0 1px 2px rgba(0, 0, 0, 0.12),
             0 6px 14px rgba(42, 22, 154, 0.18);
@@ -286,7 +286,7 @@ ul li {
 .fly-in.show {
     animation: flyInLeft 0.6s ease-out forwards;
 }
-
+/* FlyIn keyframe was found here: https://www.tutorialpedia.org/blog/fly-in-button-css/#google_vignette */
 @keyframes flyInLeft {
     to {
         opacity: 1;
@@ -350,23 +350,17 @@ ul li {
 .footer-links a {
     flex: 1;
     text-align: center;
-
     padding: 12px 10px;
     border-radius: 10px;
-
     background: rgba(255, 255, 255, 0.08);
     color: #A7FC47;
     text-decoration: none;
-
     font-size: 15px;
     font-weight: 700;
-
     border: 1px solid rgba(167, 252, 71, 0.35);
-
     transition: background 0.25s ease, transform 0.15s ease;
 }
-
-
+/* Scale: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/transform-function/scale */
 .footer-links a:active {
     transform: scale(0.97);
 }
@@ -423,7 +417,6 @@ ul li {
     margin-bottom: 16px;
     text-decoration: none;
     color: #2A169A;
-
     box-shadow: 0 6px 18px rgba(42, 22, 154, 0.12);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -441,7 +434,7 @@ ul li {
 
 .social-post.instagram { border-left: 6px solid #E1306C; }
 .social-post.x { border-left: 6px solid #000; }
-
+/* https://tech9-on.medium.com/before-and-after-in-css-74340d425d75 */
 *, *::before, *::after {
     box-sizing: border-box;
 }

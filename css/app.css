@@ -449,7 +449,16 @@ section {
 .error-text {
     color: #d8000c;
 }
-
+#leaderboardBtn {
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 20px;
+}
 /* Mobile-friendly */
 @media screen and (max-width: 600px) {
     .app-main {

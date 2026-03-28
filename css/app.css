@@ -983,7 +983,7 @@ input[type="text"]{
 
 .leaderboard-score {
     font-weight: bold;
-    color: #A7FC47;
+    color: #088948;
     flex-shrink: 0;
     text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }

@@ -430,6 +430,10 @@ section {
     margin-bottom: 12px;
     text-align: center;
 }
+.leaderboard-modal .modal-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
 
 .final-score-number {
     font-size: 36px;

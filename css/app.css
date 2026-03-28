@@ -444,6 +444,11 @@ section {
 .leaderboard-display p {
     margin: 6px 0;
 }
+.leaderboard-display {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
 
 /* Error section */
 .error-text {

@@ -14,7 +14,13 @@ const appData = {
 };
 
 let locationIntervalId = null;
+// Qr initialization
 let qrScanner = null;
+let qrCameras=[];
+let  QrCameraIndex= 0;
+
+
+
 
 //API FUNCTIONS
 
@@ -227,6 +233,71 @@ function refreshCoordinates(){
         },
         function(){}
     );
+}
+
+function openQrScanner(){
+    let modal = document.getElementById("qrmodal");
+    if (!modal){
+        return;
+    }
+
+    // show the modal
+    modal.classList.remove("hidden");
+
+    //only create one scanner at a time
+    if (qrScanner!= null){
+        return;
+    }
+
+    //scanner options
+    let opts ={
+        continuous: true,
+        video: document.getElementById("qr-preview"),
+        mirror: true,
+        captureImage:false,
+        refactoryPeriod:5000,
+        scanPeriod: 1
+    };
+
+    let qrScanner = new Instascan.Scanner(opts);
+
+    // when the Qr is scanned, if its a url closes the modal and shows confirmation message
+    qrScanner.addEventListener("scan", function(content){
+        if(content.indexOf("https://")=== 0||content.indexOf("https://")===0){
+            closeQRScannner();
+            if(confirm("QR code contains a link:\n"+content+"\nOpen in new tab?")){
+                window.open(content,"_blank");
+            }
+        } else{
+            let answerInput = document.getElementById("answerInput");
+            if(answerInput){
+                answerInput.value = content;
+            }
+            closeQRScanner();
+        }
+    });
+    // get the available cameras and start the scanner
+    Instascan.Camera.getCameras()
+        .then(function(cameras){
+            if(cameras.length>0){
+                qrCameras = cameras;
+                qrCameraIndex = cameras.legnth>1?1:0;
+
+                //dissable camera switch buttons if only one camera is available
+                let prevBtn = document.getElementById("qr-prev-camera");
+                let nextBtn = document.getElementById("qr-next-camera");
+                if(cameras.length===1){
+                    prevBtn.dissabled = true;
+                    nextBtn.disabled = true;
+                }else{
+                    prevBtn.disabled = false;
+                    nextBtn.disabled = false;
+                }
+
+
+            }
+        })
+
 }
 
 //HUNT SELECTION

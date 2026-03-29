@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing</title>
+</head>
+<body>
+<nav>
+    <a href="index.html">Home</a>
+    <a href="app.html">Play the app</a>
+    <a href="notes.html">Notes</a>
+</nav>
+
+<h1>Testing - Code Cyprus Treasure Hunt</h1>
+<p>
+    This page documents the testing effort carried out by team H on the Code Cyprus Treasure Hunt web application. <br>
+    It is split into three parts:<br>
+    Unit Testing (verifies using the testing API),<br>
+    User Acceptance Testing (validation),<br>
+    Nielsen's Heuristics Usability Assessment<br>
+</p>
+
+<!--Section 1 - Unit Testing-->
+<h2>Unit Tests</h2>
+<p>
+    The testing API which is provided at <a href="https://codecyprus.org/th/testing" target="_blank">codecyprus.org/th/testing</a>
+</p>
+
+<!--LIST-->
+<h3>Test 1 - list</h3>
+<table id="list-table">
+    <tr>
+        <th>Check</th>
+        <th>Expected</th>
+        <th>Computed</th>
+        <th>Pass / Fail</th>
+    </tr>
+</table>
+
+<!--START-->
+<h3>Test 2 - start</h3>
+<table id="start-table">
+    <tr>
+        <th>Check</th>
+        <th>Expected</th>
+        <th>Computed</th>
+        <th>Pass / Fail</th>
+    </tr>
+</table>
+
+<!--QUESTION-->
+<h3>Test 3 - question</h3>
+<table id="question-table">
+    <tr>
+        <th>Check</th>
+        <th>Expected</th>
+        <th>Computed</th>
+        <th>Pass / Fail</th>
+    </tr>
+</table>
+
+<!--ANSWER-->
+<h3>Test 4 - answer</h3>
+<table id="answer-table">
+    <tr>
+        <th>Check</th>
+        <th>Expected</th>
+        <th>Computed</th>
+        <th>Pass / Fail</th>
+    </tr>
+</table>
+
+<!--SCORE-->
+<h3>Test 5 - score</h3>
+<table id="score-table">
+    <tr>
+        <th>Check</th>
+        <th>Expected</th>
+        <th>Computed</th>
+        <th>Pass / Fail</th>
+    </tr>
+</table>
+
+<!--LEADERBOARD-->
+<h3>Test 6 - leaderboard</h3>
+<table id="leaderboard-table">
+    <tr>
+        <th>Check</th>
+        <th>Expected</th>
+        <th>Computed</th>
+        <th>Pass / Fail</th>
+    </tr>
+</table>
+
+<form action="javascript:getLeaderboard()">
+  <input type="number" id="size" />
+  <button id="submit">Submit</button>
+</form>
+
+<table id="test-results-table" border="1">
+  <tr>
+<!--    <th>Input</th>-->
+    <th>Expected leaderboard size</th>
+    <th>Computed leaderboard size</th>
+    <th>Expected numOfPlayers</th>
+    <th>Computed numOfPlayers</th>
+    <th>Expected status</th>
+    <th>Computed status</th>
+    <th>Pass/Fail</th>
+  </tr>
+</table>
+
+<!--Section 2 - User Testing -->
+<h2>2. User Acceptance Testing</h2>
+<p>
+    (UAT) is a validation process that use real user in order to confirm the system is ready.
+    Tests were carried out by the team
+</p>
+
+<table>
+    <tr>
+        <th>Test No.</th>
+        <th>Tested By</th>
+        <th>Test Type</th>
+        <th>Date / Time</th>
+        <th>Result</th>
+        <th>Test Description</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>Maximos Philippou</td>
+        <td>Functional</td>
+        <td>25/03/2026 19:00</td>
+        <td>Pass</td>
+        <td>Player can enter a name and press Load Available Hunts to see a list of hunts.
+        The list loaded correctly on both desktop and mobile</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>Michalis Andreou</td>
+        <td>Functional</td>
+        <td>25/03/2026 19:30</td>
+        <td>Pass</td>
+        <td>Player can select a hunt, accept cookies and a game session starts successfully
+        on both desktop and mobile.</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>Charalampos Zornis</td>
+        <td>Functional</td>
+        <td>25/03/2026 19:45</td>
+        <td>Pass</td>
+        <td>Player can select allow location permission and see a textbox saying location acquired.
+            Location works and updates every 30 seconds on both desktop and mobile.</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td></td>
+        <td>Functional</td>
+        <td>26/03/2026 13:35</td>
+        <td>Pass</td>
+        <td>TEXT question displays a text input field for the player to type an answer.
+        Text input is displayed correctly for text and numeric question types.</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td></td>
+        <td>Functional</td>
+        <td>26/03/2026 13:55</td>
+        <td>Pass</td>
+        <td>BOOLEAN question displays True or False buttons instead of a text input.
+        True / False buttons are displayed and work as intented</td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td></td>
+        <td>Functional</td>
+        <td>26/03/2026 14:10</td>
+        <td>Pass</td>
+        <td>MCQ displays four buttons (A, B, C, D). Buttons are in a 2x2 grid format
+        and work successfully.</td>
+    </tr>
+    <tr>
+        <td>7</td>
+        <td></td>
+        <td>Functional</td>
+        <td>27/03/2026 13:05</td>
+        <td>Pass</td>
+        <td>Submitting the correct answer shows a success message and moves to the next
+        question. Feedback shown from API message.</td>
+    </tr>
+    <tr>
+        <td>8</td>
+        <td></td>
+        <td>Functional</td>
+        <td>27/03/2026 13:25</td>
+        <td>Pass</td>
+        <td>Skipping answers deducts points and loads the next question.</td>
+    </tr>
+    <tr>
+        <td>9</td>
+        <td></td>
+        <td>Functional</td>
+        <td>27/03/2026 13:40</td>
+        <td>Pass</td>
+        <td>When the hunt is complete, the leaderboard shows rankings, names and scores.
+        Results section is displayed correctly</td>
+    </tr>
+    <tr>
+        <td>10</td>
+        <td></td>
+        <td>Usability</td>
+        <td>27/03/2026 13:50</td>
+        <td>Pass</td>
+        <td>The app is usable on a mobile device without overlapping elements.
+        Tested on Android Chrome</td>
+    </tr>
+</table>
+
+<!--Section 3 Nielsen's Heuristics-->
+<h2>3. Nielsen's Heuristics - Usability</h2>
+<p>
+    Nielsen's ten heuristics are principles to evaluate the usability
+    of an app. Each heuristic will go against our app and provide a rating
+    and an observation.
+</p>
+<div class="heuristic">
+    <h4>1. Visibility of System Status</h4>
+    <span class="rating">Good</span>
+    <p>
+        During any API calls a loading spinner appears. The session bar shows the player
+        name and live score at all times. After every answer, a feedback message is shown.
+        There is an indicator for what question the player is on.
+    </p>
+</div>
+
+<div class="heuristic">
+    <h4>2. Match Between System and The Real World</h4>
+    <span class="rating">Good</span>
+    <p>
+        The app uses a friendly language tone. "Let's get started!", "Hunt Complete!" or "Skip Question".
+        No technical terms such as "UUID" are shown to the player.
+    </p>
+</div>
+
+<div class="heuristic">
+    <h4>3. User Control and Freedom</h4>
+    <span class="rating">Mixed</span>
+    <p>
+        Players can return home at any time using the Home button, However, there is no way to go back to
+        a previous question once submitted. This is a limitation of the API.
+    </p>
+</div>
+
+<div class="heuristic">
+    <h4>4. Consistency and Standards</h4>
+    <span class="rating">Good</span>
+    <p>
+        Buttons follow a consistent color pallet, green for primary actions and dark blue for secondary actions.
+        Same font throughout and card style is used across all sections.
+    </p>
+</div>
+
+<div class="heuristic">
+    <h4>5. Error Prevention</h4>
+    <span class="rating">Good</span>
+    <p>
+        The player cannot submit and empty answer. Confirmation message appear before skipping a question.
+        The player name field is validated before any API calls are made.
+    </p>
+</div>
+
+<div class="heuristic">
+    <h4>6. Recognition Rather than Recall</h4>
+    <span class="rating">Good</span>
+    <p>
+        Score and progress are always visible.
+    </p>
+</div>
+
+<div class="heuristic">
+    <h4>7. Flexibility and Efficiency of Use</h4>
+    <span class="rating">Mixed</span>
+    <p>
+        The QR code scanner provides a shortcut for players, avoiding manually answering questions.
+        Session resume with cookies means returning players can keep working where they left off.
+    </p>
+</div>
+
+<div class="heuristic">
+    <h4>8. Aesthetic and Minimalist Design</h4>
+    <span class="rating">Good</span>
+    <p>
+        The question section, shows only what is needed. Score, location updates and skip button are
+        hidden when not relevant. The animated background is appealing without being distracting.
+    </p>
+</div>
+
+<div class="heuristic">
+    <h4>9. Help Users Recognize, Diagnose, and Recover from Errors</h4>
+    <span class="rating">Good</span>
+    <p>
+        Error messages use simple English and appear as feedback messages.
+        When a location answer is wrong, the API's distance message is shown.
+        Fatal errors, navigate the player to the error-section with a return button.
+    </p>
+</div>
+
+<div class="heuristic">
+    <h4>10. Help and Documentation</h4>
+    <span class="rating">Mixed</span>
+    <p>
+        An instruction page is linked from the landing page. Location is updated regularly
+        every 30 seconds as shown on screen. However, there is no help area in app.html.
+    </p>
+</div>
+
+<script>
+    let TEST_API_LINK = "https://codecyprus.org/th/test-api";
+    //Test 1: list
+
+
+    //Test 2: start
+
+
+    //test 3: question
+
+
+    //Test 4: answer
+
+
+    //Test 5: score
+
+
+    //Test 6: leaderboard
+  const testResultsTable = document.getElementById('test-results-table');
+
+  let testPairs = [
+    { size: 1, leaderboardSize: 1, numOfPlayers: 1, status: "OK" },
+    { size: 3, leaderboardSize: 3, numOfPlayers: 3, status: "OK" },
+    { size: -1, leaderboardSize: 42, numOfPlayers: 42, status: "OK" },
+  ]
+
+  async function getLeaderboard() {
+    const sizeField = document.getElementById('size');
+    const size = Number(sizeField.value);
+    let html = "";
+
+    for (let pair of testPairs) {
+      const response = await fetch(`https://codecyprus.org/th/test-api/leaderboard?size=${pair.size}`);
+      const json = await response.json();
+      const status = json.status;
+      const leaderboardSize = json.leaderboard.length;
+      const numOfPlayers = json.numOfPlayers;
+
+      let success = true;
+      if (status !== pair.status) {
+        success = false;
+      }
+      if (leaderboardSize !== pair.leaderboardSize) {
+        success = false;
+      }
+      if (numOfPlayers !== pair.numOfPlayers) {
+        success = false;
+      }
+
+      html += "<tr>" +
+      "    <td>" + pair.leaderboardSize + "</td>\n" +
+      "    <td>" + leaderboardSize + "</td>\n" +
+      "    <td>" + pair.numOfPlayers + "</td>\n" +
+      "    <td>" + numOfPlayers +"</td>\n" +
+      "    <td>" + pair.status + "</td>\n" +
+      "    <td>" + status + "</td>\n" +
+      "    <td>" + (success ? "✅" : "❌") + "</td>" +
+              "</tr>";
+    }
+
+    testResultsTable.innerHTML += html;
+  }
+  getLeaderboard();
+</script>
+</body>
+</html>

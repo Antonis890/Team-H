@@ -294,11 +294,46 @@ function openQrScanner(){
                     nextBtn.disabled = false;
                 }
 
+qrScanner.start(qrCameras[qrCameraIndex]);
+                //set initial button states based on start camera index
+                updateCameraButtons();
+
+            }else{
+                // if no camera is found show in the modal
+                document.getElementById("qr-message").textContent = "No cameras found on this device"
+                document.getElementById("qr-message").classList.remove("hidden");
+                document.getElementById("qr-message").classList.add("hidden");
+                qrScanner = null;
 
             }
         })
+        .catch(function(error){
+            // if there is a camera error show in the modal
+            console.log(error);
+            document.getElementById("qr-message").textContent = "Camera unavailable";
+            document.getElementById("qr-message").classList.remove("hidden");
+            document.getElementById("qr-message").classList.add("hidden");
+            qrScanner = null;
+        });
 
 }
+// stop the camera and close the qr modal
+function closeQRScannner(){
+    let modal =document.getElementById("qr-modal");
+    if (!modal){
+        modal.classList.remove("hidden");
+    }
+    if(qrScanner !== null){
+        qrScanner.stop();
+        qrScanner = null;
+    }
+    //reset state for next time the modal is open
+    qrCameras = [];
+    qrCameraIndex = 0;
+    document.getElementById("qr-message").classList.add("hidden");
+    document.getElementById("qr-preview").classList.remove("hidden");
+}
+//cycle through the cameras using buttons
 
 //HUNT SELECTION
 //Validate player name and get hunt list

@@ -1,0 +1,23 @@
+{
+  "name": "Code Cyprus Treasure Hunt",
+  "short_name": "Treasure Hunt",
+  "lang": "en-US",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#2A169A",
+  "theme_color": "#2A169A",
+  "icons": [
+    {
+      "src": "media/teamH.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "media/teamH.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

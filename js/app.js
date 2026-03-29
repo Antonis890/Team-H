@@ -334,7 +334,28 @@ function closeQRScannner(){
     document.getElementById("qr-preview").classList.remove("hidden");
 }
 //cycle through the cameras using buttons
+function switchCamera(direction){
+    if (qrCameras.length <= 1||qrScanner === null){
+        return;
+    }
+    qrCameraIndex = qrCameraIndex + direction;
 
+    qrScanner.start(qrCameras[qrCameraIndex]);
+    updateCameraButtons();
+
+}
+
+//enable or dissable camera buttons based on current camera index
+function updateCameraButtons(){
+    let prevBtn = document.getElementById("qr-prev-camera");
+    let nextBtn = document.getElementById("qr-next-camera");
+    if(prevBtn||!nextBtn){
+        return;
+
+    }
+    prevBtn.disabled = (qrCameraIndex === 0);
+    nextBtn.disabled = (qrCameraIndex === qrCameras.length-1);
+}
 //HUNT SELECTION
 //Validate player name and get hunt list
 function loadTreasureHunts(){

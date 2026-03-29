@@ -3,22 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--Titles and meta tags to improve search engine rankings-->
+    <title>Code Cyprus Treasure Hunt - Team H</title>
+    <meta name="description" content="Code Cyprus Treasure hunt is an interactive application, use clues, answer questions and solve puzzles to climb the leaderboard!">
+    <meta name="keywords" content="treasure hunt, Code Cyprus, location quiz, mobile web app, Team H">
+    <meta name="author" content="Team H - Antonis Kyrpis, Xenios Tekkis, Efthymios Menelaou, Martins Bodnieks, Daria Golubeva, Ivan Telegin">
+    <!--Used for PWA-->
     <meta name="theme-color" content="#2A169A">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Treasure Hunt">
     <meta name="msapplication-TileImage" content="media/teamH.png">
     <meta name="msapplication-TileColor" content="#2A169A">
-    <title>Landing page</title>
     <link rel="manifest" href="manifest.json" crossorigin="use-credentials">
     <link rel="icon" href="media/teamH.png" type="image/png"/>
     <link rel="apple-touch-icon" href="media/teamH.png">
+
     <link rel="stylesheet" href="css/index.css">
     <script src="js/main.js"></script>
-
 </head>
 <body>
 
+<!--Header-->
 <header class="header">
     <img src= "media/teamH.png" alt= "logo">
     <nav class="menu" id="menu">
@@ -33,11 +39,11 @@
                          M5 23 A2 2 0 1 0 5 27 L45 27 A2 2 0 1 0 45 23 L5 23 z
                          M5 38 A2 2 0 1 0 5 42 L45 42 A2 2 0 1 0 45 38 L5 38 z"></path>
         </svg>
-
         <span class="close-icon">✕</span>
     </a>
 </header>
 
+<!--Hero Secition-->
 <div id="content" class="fly-in">
     <p>
         <span class="hero-line">
@@ -79,19 +85,47 @@
 
 <section class="fly-in">
     <h2>Team members:</h2>
-    <ul>
-        <li>Antonis Kypris</li>
-        <li>Xenios Tekkis</li>
-        <li>Efthymios Menelaou</li>
-        <li>Martins Bodnieks</li>
-        <li>Daria Golubeva</li>
-        <li>Ivan Telegin</li>
+    <ul class="team-list">
+        <li>
+            <span class="team-name">Antonis Kypris</span>
+            <span class="team-role">Team Leader</span>
+        </li>
+        <li>
+            <span class="team-name">Xenios Tekkis</span>
+            <span class="team-role">Lead Developer</span>
+        </li>
+        <li>
+            <span class="team-name">Efthymios Menelaou</span>
+            <span class="team-role">Developer</span>
+        </li>
+        <li>
+            <span class="team-name">Martins Bodnieks</span>
+            <span class="team-role">Tester</span>
+        </li>
+        <li>
+            <span class="team-name">Daria Golubeva</span>
+            <span class="team-role">Designer</span>
+        </li>
+        <li>
+            <span class="team-name">Ivan Telegin</span>
+            <span class="team-role">Marketing</span>
+        </li>
+
     </ul>
 </section>
 
+<!--Digital Marketing-->
+<section class="fly-in">
+    <h2>Digital Marketing</h2>
+    <p>
+        In order to promote the Code Cyprus Treasure Hunt and reach a wider audience,
+        We are using several social media platforms
+    </p>
+</section>
+
+<!--Instagram-->
 <section class="social-feed fly-in">
     <h2>Latest from Instagram</h2>
-
     <blockquote class="instagram-media"
                 data-instgrm-permalink="https://www.instagram.com/p/DU8w4U4gjhk/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=="
                 data-instgrm-version="14">
@@ -100,9 +134,9 @@
 
 <script async src="https://www.instagram.com/embed.js"></script>
 
+<!--Twitter-->
 <section class="social-feed fly-in">
     <h2>Live Updates</h2>
-
     <blockquote class="twitter-tweet">
         <a href="https://twitter.com/TreasureHunt_H/status/2024551213690138781"></a>
     </blockquote>
@@ -110,22 +144,18 @@
 
 <script async src="https://platform.twitter.com/widgets.js"></script>
 
-
+<!--Footer-->
 <footer class="footer fly-in">
     <div class="footer-inner">
-
         <h3 class="footer-title">Links</h3>
-
         <nav class="footer-links">
             <a href="app.html">Play the App</a>
-            <a href=".LeaderboardTest.html">Testing</a>
+            <a href="test.html">Testing</a>
             <a href="notes.html">Project Notes</a>
         </nav>
-
         <div class="footer-copy">
             © 2026 Code Cyprus Treasure Hunt · Team H
         </div>
-
     </div>
 </footer>
 

@@ -872,7 +872,29 @@ document.addEventListener("DOMContentLoaded", function() {
     showSection("welcome-section");
     checkSavedSession();
 })
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("loadHuntBtn").addEventListener("click",loadTreasureHunts);
+    document.getElementById("submitAnswerBtn").addEventListener("click", handleSubmitAnswer);
+    document.getElementById("skipQuestionBtn").addEventListener("click", resetApp);
+    document.getElementById("playAgainBtn").addEventListener("click", resetApp);
+    document.getElementById("returnHomeBtn").addEventListener("click", resetApp);
+    document.getElementById("qr-icon").addEventListener("click", openQrScanner);
 
+    //qr modal buttons
+    document.getElementById("qr-close-btn").addEventListener("click", closeQRScanner);
+    document.getElementById(qr-prev-camera).addEventListener("click",function(){
+        switchCamera(-1);
+    });
+    showSection("welcome-section");
+
+    //Check for a saved session
+    checkSavedSession();
+
+    window.selectHunt = selectHunt;
+    window.selectedAnswer = selectedAnswer;
+
+
+})
 window.selectHunt = selectHunt;
 window.selectAnswer = selectAnswer;
 

@@ -72,23 +72,8 @@
                     📍 Location updated
                 </div>
             </div>
-            <!-- QR Scanner Modal -->
-            <div id="qrScannerModal" class="qr-modal hidden">
-                <div class="qr-modal-content">
-                    <div class="qr-modal-header">
-                        <h3>Scan QR Code</h3>
-                        <button id="closeScannerBtn" class="close-btn">&times;</button>
-                    </div>
-                    <div class="camera-controls">
-                        <button id="switchCameraBtn" class="app-btn app-btn-secondary">Switch Camera</button>
-                        <span id="cameraInfo" class="camera-info">Camera 1/1</span>
-                    </div>
-                    <video id="qrPreview" class="qr-preview"></video>
-                    <div id="qrResult" class="qr-result hidden">
-                        <p>Scanned: <span id="scannedContent"></span></p>
-                    </div>
-                </div>
-            </div>
+
+
             <!--Question Container-->
             <div id="questionContainer" class="hidden">
                 <div class="question-header">
@@ -146,6 +131,7 @@
         <div class="loading-spinner"></div>
         <p>Loading...</p>
     </div>
+ <!--Qr button-->
 
     <button id="qr-icon" class="hidden" onclick="" aria-label="Scan QR Code">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 100 100" fill="currentColor">
@@ -166,6 +152,7 @@
         </svg>
     </button>
 
+    <!--leaderboard modal-->
     <div id="leaderboardContainer" class="leaderboard-modal hidden">
         <div class="modal-content">
             <div class="modal-header">
@@ -177,8 +164,23 @@
             </div>
         </div>
     </div>
-
-
+<!--QR code scanner modal-->
+    <div id="qrScannerModal" class="qr-modal hidden">
+        <div class="qr-modal-content">
+            <div class="qr-modal-header">
+                <h3>Scan QR Code</h3>
+                <button id="closeScannerBtn" class="close-btn">&times;</button>
+            </div>
+            <div class="camera-controls">
+                <button id="switchCameraBtn" class="app-btn app-btn-secondary">Switch Camera</button>
+                <span id="cameraInfo" class="camera-info">Camera 1/1</span>
+            </div>
+            <video id="qrPreview" class="qr-preview"></video>
+            <div id="qrResult" class="qr-result hidden">
+                <p>Scanned: <span id="scannedContent"></span></p>
+            </div>
+        </div>
+    </div>
     <script src="js/app.js"></script>
     <!--Google Analytics-->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-H43Q0MHPC9"></script>

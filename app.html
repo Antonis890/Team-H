@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--Used for PWA-->
     <meta name="theme-color" content="#2A169A">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,11 +15,11 @@
     <link rel="manifest" href="manifest.json" crossorigin="use-credentials">
     <link rel="icon" href="media/teamH.png" type="image/png"/>
     <link rel="apple-touch-icon" href="media/teamH.png">
+
     <link rel="stylesheet" href="css/app.css">
     <script src="js/instascan.min.js"></script>
     <script src="js/main.js"></script>
 </head>
-
 <body>
 
     <!--Header Section-->
@@ -27,7 +28,7 @@
             <img src="media/teamH.png" alt="logo">
         </div>
         <button id="HomeButton" class="app-btn app-btn-home"
-                onclick="window.location.href='index.html';">Home</button>
+                onclick="window.location.href='index.html';">🏠</button>
     </header>
 
     <!--Session information bar-->
@@ -111,7 +112,8 @@
                         <p class="loading-text">Loading leaderboard...</p>
                     </div>
                 </div>
-
+                <!--Share score on Twitter-->
+                <button id="shareTwitterBtn" class="app-btn app-btn-secondary share-btn">Share on X</button>
                 <button id="playAgainBtn" class="app-btn app-btn-primary">Play Again</button>
             </div>
         </section>
@@ -121,7 +123,7 @@
             <div class="app-container">
                 <h2>Something went wrong</h2>
                 <p id="errorMessage" class="error-text"></p>
-                <button id="returnHomeBtn" class="app-btn app-btn-primary">Return to Home</button>
+                <button id="returnHomeBtn" class="app-btn app-btn-primary">Return Home</button>
             </div>
         </section>
     </main>
@@ -131,26 +133,9 @@
         <div class="loading-spinner"></div>
         <p>Loading...</p>
     </div>
- <!--Qr button-->
 
-    <button id="qr-icon" class="hidden" onclick="" aria-label="Scan QR Code">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 100 100" fill="currentColor">
-            <!--Top left square-->
-            <rect x="5" y="5" width="30" height="30" rx="4" fill="none" stroke="currentColor" stroke-width="7" />
-            <rect x="15" y="15" width="10" height="10" />
-            <!--Top right square-->
-            <rect x="65" y="5" width="30" height="30" rx="4" fill="none" stroke="currentColor" stroke-width="7" />
-            <rect x="75" y="15" width="10" height="10" />
-            <!--Bottom left square-->
-            <rect x="5" y="65" width="30" height="30" rx="4" fill="none" stroke="currentColor" stroke-width="7" />
-            <rect x="15" y="75" width="10" height="10" />
-            <!--Dots on the right side-->
-            <rect x="65" y="65" width="8" height="8" />
-            <rect x="78" y="65" width="8" height="8" />
-            <rect x="65" y="78" width="8" height="8" />
-            <rect x="78" y="78" width="8" height="8" />
-        </svg>
-    </button>
+ <!--Qr button-->
+    <button id="qr-icon" class="hidden" aria-label="Scan QR Code">📷</button>
 
     <!--leaderboard modal-->
     <div id="leaderboardContainer" class="leaderboard-modal hidden">
@@ -164,20 +149,25 @@
             </div>
         </div>
     </div>
+
 <!--QR code scanner modal-->
-    <div id="qrScannerModal" class="qr-modal hidden">
+    <div id="qr-modal" class="qr-modal hidden">
         <div class="qr-modal-content">
             <div class="qr-modal-header">
                 <h3>Scan QR Code</h3>
-                <button id="closeScannerBtn" class="close-btn">&times;</button>
+                <button id="qr-close-btn" class="close-btn">&times;</button>
             </div>
-            <div class="camera-controls">
-                <button id="switchCameraBtn" class="app-btn app-btn-secondary">Switch Camera</button>
-                <span id="cameraInfo" class="camera-info">Camera 1/1</span>
-            </div>
-            <video id="qrPreview" class="qr-preview"></video>
-            <div id="qrResult" class="qr-result hidden">
-                <p>Scanned: <span id="scannedContent"></span></p>
+
+            <!--Error message-->
+            <p id="qr-message" class="qr-message hidden"></p>
+
+            <!--Camera-->
+            <video id="qr-preview" class="qr-video"></video>
+
+            <!--Camera switch buttons-->
+            <div class="qr-camera-controls">
+                <button id="qr-prev-camera" class="app-btn app-btn-secondary">◀️ Previous</button>
+                <button id="qr-next-camera" class="app-btn app-btn-primary">Next ▶️</button>
             </div>
         </div>
     </div>

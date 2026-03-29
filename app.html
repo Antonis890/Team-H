@@ -72,7 +72,23 @@
                     📍 Location updated
                 </div>
             </div>
-
+            <!-- QR Scanner Modal -->
+            <div id="qrScannerModal" class="qr-modal hidden">
+                <div class="qr-modal-content">
+                    <div class="qr-modal-header">
+                        <h3>Scan QR Code</h3>
+                        <button id="closeScannerBtn" class="close-btn">&times;</button>
+                    </div>
+                    <div class="camera-controls">
+                        <button id="switchCameraBtn" class="app-btn app-btn-secondary">Switch Camera</button>
+                        <span id="cameraInfo" class="camera-info">Camera 1/1</span>
+                    </div>
+                    <video id="qrPreview" class="qr-preview"></video>
+                    <div id="qrResult" class="qr-result hidden">
+                        <p>Scanned: <span id="scannedContent"></span></p>
+                    </div>
+                </div>
+            </div>
             <!--Question Container-->
             <div id="questionContainer" class="hidden">
                 <div class="question-header">

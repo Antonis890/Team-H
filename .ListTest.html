@@ -24,7 +24,7 @@
 
 <p>Enter number of treasure hunts:</p>
 
-<form onsubmit="getTreasureHunts(); return false;">
+<form onsubmit="runTests(); return false;">
     <input type="number" id="size" value="2" />
     <button type="submit">Submit</button>
 </form>
@@ -57,7 +57,7 @@
         return API_URL + "?number-of-ths=" + encodeURIComponent(size);
     }
 
-    async function getTreasureHunts() {
+    async function runTests() {
         const size = document.getElementById("size").value;
 
 
@@ -103,7 +103,9 @@
 
 
     }
-    //getTreasureHunts(); i tried running it without the button but it didnt work :(
+
+        runTests();
+
 </script>
 </body>
 </html>

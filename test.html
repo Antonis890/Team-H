@@ -29,76 +29,90 @@
 
 <!--LIST-->
 <h3>Test 1 - list</h3>
-<table id="list-table">
+
+<table id="list-test-results-table" border="1">
     <tr>
-        <th>Check</th>
-        <th>Expected</th>
-        <th>Computed</th>
-        <th>Pass / Fail</th>
+        <th>Expected Name</th>
+        <th>Computed Name</th>
+        <th>Expected Description</th>
+        <th>Computed Description</th>
+        <th>Expected Status</th>
+        <th>Computed Status</th>
+        <th>Pass/Fail</th>
     </tr>
 </table>
 
 <!--START-->
 <h3>Test 2 - start</h3>
-<table id="start-table">
+<table id="Start-test-results-table" border="1">
     <tr>
-        <th>Check</th>
-        <th>Expected</th>
-        <th>Computed</th>
-        <th>Pass / Fail</th>
+        <th>Expected status</th>
+        <th>Computed status</th>
+        <th>Expected error</th>
+        <th>Computed error</th>
+        <th>Pass/Fail</th>
     </tr>
 </table>
 
 <!--QUESTION-->
 <h3>Test 3 - question</h3>
-<table id="question-table">
+<table id="Question-test-results-table" border="1">
+
     <tr>
-        <th>Check</th>
-        <th>Expected</th>
-        <th>Computed</th>
-        <th>Pass / Fail</th>
+        <th>Expected question type</th>
+        <th>Computed question type</th>
+        <th>Expected canBeSkipped</th>
+        <th>Computed canBeSkipped</th>
+        <th>Expected requiresLocation</th>
+        <th>Computed requiresLocation</th>
+        <th>Expected status</th>
+        <th>Computed status</th>
+        <th>Pass/Fail</th>
     </tr>
 </table>
 
 <!--ANSWER-->
 <h3>Test 4 - answer</h3>
-<table id="answer-table">
-    <tr>
-        <th>Check</th>
-        <th>Expected</th>
-        <th>Computed</th>
-        <th>Pass / Fail</th>
-    </tr>
-</table>
+
+    <table id="answer-test-results-table" border="1">
+
+        <tr>
+            <th>Expected correct</th>
+            <th>Computed correct</th>
+            <th>Expected completed</th>
+            <th>Computed completed</th>
+            <th>Expected message</th>
+            <th>Computed message</th>
+            <th>Expected score</th>
+            <th>Computed score</th>
+            <th>Expected status</th>
+            <th>Computed status</th>
+            <th>Pass/Fail</th>
+        </tr>
+    </table>
+
 
 <!--SCORE-->
 <h3>Test 5 - score</h3>
-<table id="score-table">
+<table id="score-test-results-table" border="1">
     <tr>
-        <th>Check</th>
-        <th>Expected</th>
-        <th>Computed</th>
-        <th>Pass / Fail</th>
+        <th>Expected completed</th>
+        <th>Computed completed</th>
+        <th>Expected finished</th>
+        <th>Computed finished</th>
+        <th>Expected score</th>
+        <th>Computed score</th>
+        <th>Computed status</th>
+        <th>Computed status</th>
+        <th>Pass/Fail</th>
     </tr>
 </table>
+
 
 <!--LEADERBOARD-->
 <h3>Test 6 - leaderboard</h3>
-<table id="leaderboard-table">
-    <tr>
-        <th>Check</th>
-        <th>Expected</th>
-        <th>Computed</th>
-        <th>Pass / Fail</th>
-    </tr>
-</table>
 
-<form action="javascript:getLeaderboard()">
-  <input type="number" id="size" />
-  <button id="submit">Submit</button>
-</form>
-
-<table id="test-results-table" border="1">
+<table id="leaderboard-test-results-table" border="1">
   <tr>
 <!--    <th>Input</th>-->
     <th>Expected leaderboard size</th>
@@ -317,68 +331,330 @@
 </div>
 
 <script>
-    let TEST_API_LINK = "https://codecyprus.org/th/test-api";
+
     //Test 1: list
 
+    let LIST_API = "https://codecyprus.org/th/api/list";
+    const listTable = document.getElementById('list-test-results-table');
+
+    let listPairs = [
+        { name: "⚔️ CO1111 Treasure Hunt 2026 ⚔️", description: "The Computing Challenge Treasure Hunt - 2026", status: "OK" },
+        { name: "Treasure Hunt 2", description: "Test hunt", status: "OK" }
+    ];
+
+
+    function buildListURL(size) {
+        return LIST_API + "?number-of-ths=" + size;
+    }
+
+    async function runListTests() {
+        let response = await fetch(buildListURL(2));
+        let data = await response.json();
+
+        let hunts = data.treasureHunts;
+        let html = "";
+
+        for (let i = 0; i < listPairs.length; i++) {
+            let expected = listPairs[i];
+            let actual = hunts[i];
+
+            if (!actual) continue;
+
+            let success = true;
+
+            if (actual.name !== expected.name) success = false;
+            if (actual.description !== expected.description) success = false;
+            if (data.status !== expected.status) success = false;
+
+            html += "<tr>" +
+                "<td>" + expected.name + "</td>" +
+                "<td>" + actual.name + "</td>" +
+                "<td>" + expected.description + "</td>" +
+                "<td>" + actual.description + "</td>" +
+                "<td>" + expected.status + "</td>" +
+                "<td>" + data.status + "</td>" +
+                "<td>" + (success ? "✅" : "❌") + "</td>" +
+                "</tr>";
+        }
+
+        listTable.innerHTML += html;
+    }
 
     //Test 2: start
+    const START_API_LINK = "https://codecyprus.org/th/api/start";
+    const StartTable = document.getElementById("Start-test-results-table");
 
+    // Put the values you want to test here
+    const BASE_QUERY = {
+        app: "simpsons-app",
+        "treasure-hunt-id": "ag9nfmNvZGVjeXBydXNvcmdyGQsSDFRyZWFzdXJlSHVudBiAgICAvKGCCgw",
+    };
+
+    // Because "Homer" is already in use per your example response,
+    // this test expects ERROR for Homer.
+    // You can also include a different playerName to expect OK.
+    const StartTestPairs = [
+        {
+            player: "Homer",
+            expectedStatus: "ERROR",
+            expectedErrorIncludes: "already in use",
+        },
+        {
+            // try a different player name to get a successful start (expected OK)
+            player: "Homer_" + Math.floor(Math.random() * 100000),
+            expectedStatus: "OK",
+            expectedErrorIncludes: "",
+        }
+    ];
+
+    function StartCall(pair) {
+        const params = new URLSearchParams();
+        params.set("player", pair.player);
+        params.set("app", BASE_QUERY.app);
+        params.set("treasure-hunt-id", BASE_QUERY["treasure-hunt-id"]);
+        return START_API_LINK + "?" + params.toString();
+    }
+
+    async function runStartTests() {
+        let rowsHtml = "";
+
+        for (const pair of StartTestPairs) {
+            const call = StartCall(pair);
+
+
+            const json = await(await fetch(call)).json();
+            const status = json.status;
+            const errorMessages = Array.isArray(json.errorMessages) ? json.errorMessages : [];
+            const computedErrorText = errorMessages.length ? errorMessages.join(" | ") : "";
+
+            const success =
+                status === pair.expectedStatus &&
+                (
+                    !pair.expectedErrorIncludes ||
+                    computedErrorText.includes(pair.expectedErrorIncludes)
+                );
+
+            rowsHtml += "<tr>"
+                + "<td>" + pair.expectedStatus + "</td>"
+                + "<td>" + status + "</td>"
+                + "<td>" + (pair.expectedErrorIncludes || "(none)") + "</td>"
+                + "<td>" + (computedErrorText || "(none)") + "</td>"
+                + "<td>" + (success ? "✅" : "❌") + "</td>"
+                + "</tr>";
+        }
+        StartTable.innerHTML += rowsHtml;
+    }
 
     //test 3: question
+    let TEST_API_LINK = "https://codecyprus.org/th/test-api/question";
 
+    const QuestionTable = document.getElementById('Question-test-results-table');
+
+    // testing core question components
+    const QuestionTestPairs = [
+        { questionType: "MCQ", canBeSkipped: true, requiresLocation: true, status: "OK" },
+        { questionType: "INTEGER", canBeSkipped: false, requiresLocation: false, status: "OK" },
+        { questionType: "BOOLEAN", canBeSkipped: true, requiresLocation: false, status: "OK" },
+        { questionType: "TEXT", canBeSkipped: false, requiresLocation: true, status: "OK" },
+    ];
+
+    function questionCall(pair) {
+
+        const parameters = [];
+        parameters.push("question-type=" + encodeURIComponent(pair.questionType));
+
+        if (pair.canBeSkipped) {
+            parameters.push("can-be-skipped");
+        }
+        if (pair.requiresLocation) {
+            parameters.push("requires-location");
+        }
+        return TEST_API_LINK + "?" + parameters.join("&");
+    }
+
+    async function runQuestionTests() {
+
+        let rowsHtml = "";
+
+        for (const pair of QuestionTestPairs) {
+
+
+            const call = questionCall(pair);
+            const json = await (await fetch(call)).json();
+            const questionType = json.questionType;
+            const canBeSkipped = json.canBeSkipped;
+            const requiresLocation = json.requiresLocation;
+            const status = json.status;
+
+            let success = true;
+            if (status !== pair.status) {
+                success = false;
+            }
+            if (questionType !== pair.questionType) {
+                success = false;
+            }
+            if (canBeSkipped !== pair.canBeSkipped) {
+                success = false;
+            }
+            if (status !== pair.requiresLocation) {
+                success = false;
+            }
+            if (status !== pair.status) {
+                success = false;
+            }
+
+            rowsHtml += "<tr>" +
+                "    <td>" + pair.questionType + "</td>\n" +
+                "    <td>" + questionType + "</td>\n" +
+                "    <td>" + pair.canBeSkipped + "</td>\n" +
+                "    <td>" + canBeSkipped +"</td>\n" +
+                "    <td>" + pair.requiresLocation + "</td>\n" +
+                "    <td>" + requiresLocation + "</td>\n" +
+                "    <td>" + pair.status + "</td>\n" +
+                "    <td>" + status + "</td>\n" +
+                "    <td>" + (success ? "✅" : "❌") + "</td>" +
+                "</tr>";
+        }
+        QuestionTable.innerHTML += rowsHtml;
+
+    }
 
     //Test 4: answer
 
+    let ANSWER_API = "https://codecyprus.org/th/test-api/answer";
+    const answerTable = document.getElementById('answer-test-results-table');
 
-    //Test 5: score
+    let answerPairs = [
+        { correct: true, completed: false, message: "Correct answer, well done!", score: 10, status: "OK" },
+        { correct: true,  completed: true,  message: "Correct answer, well done!", score: 10,  status: "OK" },
+        { correct: false, completed: false, message: "Wrong answer, try again.", score: -3, status: "OK" },
+    ];
 
+    function buildAnswerURL(pair) {
+        let params = [];
 
-    //Test 6: leaderboard
-  const testResultsTable = document.getElementById('test-results-table');
+        if (pair.correct) params.push("correct");
+        params.push("completed=" + pair.completed);
 
-  let testPairs = [
-    { size: 1, leaderboardSize: 1, numOfPlayers: 1, status: "OK" },
-    { size: 3, leaderboardSize: 3, numOfPlayers: 3, status: "OK" },
-    { size: -1, leaderboardSize: 42, numOfPlayers: 42, status: "OK" },
-  ]
-
-  async function getLeaderboard() {
-    const sizeField = document.getElementById('size');
-    const size = Number(sizeField.value);
-    let html = "";
-
-    for (let pair of testPairs) {
-      const response = await fetch(`https://codecyprus.org/th/test-api/leaderboard?size=${pair.size}`);
-      const json = await response.json();
-      const status = json.status;
-      const leaderboardSize = json.leaderboard.length;
-      const numOfPlayers = json.numOfPlayers;
-
-      let success = true;
-      if (status !== pair.status) {
-        success = false;
-      }
-      if (leaderboardSize !== pair.leaderboardSize) {
-        success = false;
-      }
-      if (numOfPlayers !== pair.numOfPlayers) {
-        success = false;
-      }
-
-      html += "<tr>" +
-      "    <td>" + pair.leaderboardSize + "</td>\n" +
-      "    <td>" + leaderboardSize + "</td>\n" +
-      "    <td>" + pair.numOfPlayers + "</td>\n" +
-      "    <td>" + numOfPlayers +"</td>\n" +
-      "    <td>" + pair.status + "</td>\n" +
-      "    <td>" + status + "</td>\n" +
-      "    <td>" + (success ? "✅" : "❌") + "</td>" +
-              "</tr>";
+        return ANSWER_API + "?" + params.join("&");
     }
 
-    testResultsTable.innerHTML += html;
-  }
-  getLeaderboard();
+    async function runAnswerTests() {
+        let html = "";
+
+        for (let pair of answerPairs) {
+            let json = await (await fetch(buildAnswerURL(pair))).json();
+
+            let success = true;
+
+            if (json.status !== pair.status) success = false;
+            if (json.correct !== pair.correct) success = false;
+            if (json.completed !== pair.completed) success = false;
+            if (json.message !== pair.message) success = false;
+
+            html += "<tr>" +
+                "<td>" + pair.correct + "</td>" +
+                "<td>" + json.correct + "</td>" +
+                "<td>" + pair.completed + "</td>" +
+                "<td>" + json.completed + "</td>" +
+                "<td>" + pair.message + "</td>" +
+                "<td>" + json.message + "</td>" +
+                "<td>" + pair.score + "</td>" +
+                "<td>" + json.score + "</td>" +
+                "<td>" + pair.status + "</td>" +
+                "<td>" + json.status + "</td>" +
+                "<td>" + (success ? "✅" : "❌") + "</td>" +
+                "</tr>";
+        }
+
+        answerTable.innerHTML += html;
+    }
+
+
+
+    //Test 5: score
+    let Score_API = "https://codecyprus.org/th/test-api/score";
+    const scoreTable = document.getElementById('score-test-results-table');
+
+    let testPairs = [
+        { completed: false, finished: false, score: 42, status: "OK" },
+    ];
+
+    function buildScoreURL(pair) {
+        return Score_API +
+            "?completed=" + pair.completed +
+            "&finished=" + pair.finished;
+    }
+
+    async function runScoreTests() {
+        let html = "";
+
+        for (let pair of testPairs) {
+            let json = await (await fetch(buildScoreURL(pair))).json();
+
+            let success = true;
+
+            if (json.status !== pair.status) success = false;
+            if (json.completed !== pair.completed) success = false;
+            if (json.finished !== pair.finished) success = false;
+            if (json.score !== pair.score) success = false;
+
+            html += "<tr>" +
+                "<td>" + pair.completed + "</td>" +
+                "<td>" + json.completed + "</td>" +
+                "<td>" + pair.finished + "</td>" +
+                "<td>" + json.finished + "</td>" +
+                "<td>" + pair.score + "</td>" +
+                "<td>" + json.score + "</td>" +
+                "<td>" + pair.status + "</td>" +
+                "<td>" + json.status + "</td>" +
+                "<td>" + (success ? "✅" : "❌") + "</td>" +
+                "</tr>";
+        }
+
+        scoreTable.innerHTML += html;
+    }
+
+    //Test 6: leaderboard
+    const leaderboardTable = document.getElementById('leaderboard-test-results-table');
+    let leaderboardPairs = [
+        { size: 1, leaderboardSize: 1, numOfPlayers: 1, status: "OK" },
+        { size: 3, leaderboardSize: 3, numOfPlayers: 3, status: "OK" },
+        { size: -1, leaderboardSize: 42, numOfPlayers: 42, status: "OK" },
+    ];
+
+    async function runLaderboardTests() {
+        let html = "";
+
+        for (let pair of leaderboardPairs) {
+            let response = await fetch(`https://codecyprus.org/th/test-api/leaderboard?size=${pair.size}`);
+            let json = await response.json();
+
+            let success = true;
+
+            if (json.status !== pair.status) success = false;
+            if (json.leaderboard.length !== pair.leaderboardSize) success = false;
+            if (json.numOfPlayers !== pair.numOfPlayers) success = false;
+
+            html += "<tr>" +
+                "<td>" + pair.leaderboardSize + "</td>" +
+                "<td>" + json.leaderboard.length + "</td>" +
+                "<td>" + pair.numOfPlayers + "</td>" +
+                "<td>" + json.numOfPlayers + "</td>" +
+                "<td>" + pair.status + "</td>" +
+                "<td>" + json.status + "</td>" +
+                "<td>" + (success ? "✅" : "❌") + "</td>" +
+                "</tr>";
+        }
+
+        leaderboardTable.innerHTML += html;
+    }
+    runScoreTests();
+    runStartTests();
+    runQuestionTests();
+    runListTests();
+    runAnswerTests();
+    runLaderboardTests();
 </script>
 
 <!--Google Analytics-->

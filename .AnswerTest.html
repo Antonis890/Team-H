@@ -52,7 +52,7 @@
         return TEST_API_LINK + "?" + params.join("&");
     }
 
-    async function runTests() {
+    async function runAnswerTests() {
         let rowsHtml = "";
 
         for (const pair of AnswerTestPairs) {
@@ -101,7 +101,7 @@
         ResultTable.innerHTML += rowsHtml;
     }
 
-    runTests();
+    runAnswerTests();
 </script>
 </body>
 </html>

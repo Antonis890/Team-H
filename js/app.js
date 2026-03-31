@@ -294,17 +294,7 @@ function openQrScanner(){
             if (cameras.length>0) {
                 qrCameras = cameras;
                 qrCameraIndex = 0;
-
-                for (let i = 0; i < cameras.length; i++) {
-                    let name = cameras[i].name.toLowerCase();
-
-                    if (name.includes("back") ||
-                        name.includes("front") ||
-                        name.includes("environment")) {
-                        qrCameraIndex = i;
-                        break;
-                    }
-                }
+                qrCameraIndex = cameras.length > 1 ? 1 : 0;
 
                 qrScanner.start(qrCameras[qrCameraIndex]);
                 //set initial button states depending on number of cameras

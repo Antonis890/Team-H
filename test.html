@@ -296,7 +296,7 @@
 
 <div class="heuristic">
     <h4>7. Flexibility and Efficiency of Use</h4>
-    <span class="rating">Mixed</span>
+    <span class="rating">Good</span>
     <p>
         The QR code scanner provides a shortcut for players, avoiding manually answering questions.
         Session resume with cookies means returning players can keep working where they left off.
@@ -497,10 +497,7 @@
             if (canBeSkipped !== pair.canBeSkipped) {
                 success = false;
             }
-            if (status !== pair.requiresLocation) {
-                success = false;
-            }
-            if (status !== pair.status) {
+            if (requiresLocation !== pair.requiresLocation) {
                 success = false;
             }
 

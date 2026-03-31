@@ -452,8 +452,8 @@ function loadNextQuestion(){
                 return;
             }
             appData.currentQuestion = data;
-            displayQuestion(data);
             showSection("question-section");
+            displayQuestion(data);
         })
        .catch(function(error) {
            showLoading(false);
@@ -486,6 +486,15 @@ function displayQuestion(questionData) {
         skipInfo.classList.remove("hidden");
     } else {
         skipInfo.classList.add("hidden");
+    }
+
+    //location warning before answering location-sensitive question
+    let locationNotice = document.getElementById("locationNotice");
+    if (questionData.requiresLocation) {
+        locationNotice.textContent = "📍 This is a location-sensitive question. Please ensure your location is updated before submitting an answer.";
+        locationNotice.classList.remove("hidden");
+    } else {
+        locationNotice.classList.add("hidden");
     }
 
     //answer input
@@ -822,6 +831,11 @@ function showSection(sectionId){
     let targetSection = document.getElementById(sectionId);
     if (targetSection) {
         targetSection.classList.add("active");
+    }
+    //hide the qr button
+    let qrIcon = document.getElementById("qr-icon");
+    if (qrIcon) {
+        qrIcon.classList.add("hidden");
     }
 }
 

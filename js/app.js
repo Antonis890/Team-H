@@ -23,11 +23,7 @@ let qrScanner = null;
 let qrCameras=[]; //stores all available cameras in an array
 let  qrCameraIndex= 0; //used to select previous/next camera buttons
 
-
-
-
 //API FUNCTIONS
-
 //call the API
 function callAPI(endpoint) {
     return fetch(API_LINK + "/" + endpoint)
@@ -151,6 +147,7 @@ function checkSavedSession(){
     let savedScore = getCookie("score");
     let savedHunt = getCookie("huntName");
 
+    //message asking the player if they want to resume
     if (savedSession && savedName){
         let resume = confirm("Welcome back, " + savedName + "!\n" + "You have an unfinished game" + "\n" +
         "Score: " + savedScore + " points\n" + "Would you like to resume where you left off?");
@@ -171,6 +168,7 @@ function checkSavedSession(){
 
 //GEOLOCATION
 //called once when the hunt starts to request permission and holds the player's initial positions
+//never called again
 function requestLocationPermission(){
     if (!navigator.geolocation) {
         showFeedback("Geolocation is not supported on this device",false);
@@ -189,8 +187,8 @@ function requestLocationPermission(){
     );
 }
 
-//refresh the stored coordinates
-//will be called by setInterval every 30 seconds
+//function used to refresh the stored coordinates
+//called by setInterval every 30 seconds
 function updateLocation(){
     if (!navigator.geolocation) {
         return;
@@ -211,13 +209,14 @@ function updateLocation(){
 
 //start sending location every 30 seconds
 function startLocationTracking(){
+    //need a variable to clear the interval later
     locationIntervalId = setInterval(updateLocation, LOCATION_COOLDOWN)
 }
 
 //stop collecting location updates
 //called when the hunt is completed
 function stopLocationTracking(){
-    if (locationIntervalId != null) {
+    if (locationIntervalId !== null) {
         clearInterval(locationIntervalId);
         locationIntervalId = null;
     }
@@ -271,7 +270,7 @@ function openQrScanner(){
 
     qrScanner = new Instascan.Scanner(opts);
 
-    // when the QR is scanned, if it's a url close the modal and show confirmation message
+    // when the QR code is scanned, if it's a url close the modal and show confirmation message
     qrScanner.addListener("scan", function(content){
         if (content.indexOf("http://") === 0|| content.indexOf("https://") ===0) {
             //url is detected so close the modal and show a confirmation message
@@ -293,8 +292,7 @@ function openQrScanner(){
         .then(function(cameras){
             if (cameras.length>0) {
                 qrCameras = cameras;
-                qrCameraIndex = 0;
-                qrCameraIndex = cameras.length > 1 ? 1 : 0;
+                qrCameraIndex = cameras.length > 1 ? 1 : 0; //start on rear camera if on mobile
 
                 qrScanner.start(qrCameras[qrCameraIndex]);
                 //set initial button states depending on number of cameras
@@ -338,7 +336,7 @@ function closeQRScanner(){
 
 //cycle through the cameras using buttons
 function switchCamera(direction){
-    if (qrCameras.length <= 1||qrScanner === null){
+    if (qrCameras.length <= 1 || qrScanner === null){
         return;
     }
     qrCameraIndex = qrCameraIndex + direction;
@@ -355,7 +353,7 @@ function updateCameraButtons(){
         return;
     }
     prevBtn.disabled = (qrCameraIndex === 0);
-    nextBtn.disabled = (qrCameraIndex === qrCameras.length-1);
+    nextBtn.disabled = (qrCameraIndex === qrCameras.length - 1);
 }
 
 //HUNT SELECTION
@@ -422,7 +420,7 @@ function selectHunt(huntId, huntName){
                 throw new Error("Could not start session");
             }
             appData.session = data.session;
-            appData.currentHunt = { id: huntId, name: huntName};
+            appData.currentHunt = {id: huntId, name: huntName};
             updateSessionInfo();
 
             if (getCookie("consent")) {
@@ -457,7 +455,7 @@ function loadNextQuestion(){
         })
        .catch(function(error) {
            showLoading(false);
-           showError("Could not start hunt: " + error.message);
+           showError("Could not load question: " + error.message);
        });
 }
 
@@ -688,6 +686,13 @@ function finishHunt() {
     stopLocationTracking();
     //clear cookies
     clearSessionCookies();
+    //get the final score before loading results
+    getScore(appData.session)
+        .then (function (scoreData) {
+            appData.score = scoreData.score;
+            updateSessionInfo();
+        })
+        .catch(function () {});
     //Get display for final leaderboard
     showLoading(true);
     getLeaderboard(appData.session)
@@ -741,6 +746,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     appData.score = scoreData.score;
                     updateSessionInfo();
                 })
+                .catch(function () {});
             getLeaderboard(appData.session)
                 .then(function(data) {
                     displayLeaderboard(data, "leaderboard");

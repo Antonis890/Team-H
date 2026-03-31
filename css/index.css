@@ -93,6 +93,17 @@ body.menu-open .menu_icon {
     display: none;
 }
 
+.menu-simple a{
+    color: #A7FC47;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    border:1px solid rgba(167, 252, 71, 0.35);
+    padding: 8px 15px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
 /* Adaptive menu for mobile */
 @media screen and (max-width: 600px) {
 
@@ -168,6 +179,11 @@ body.menu-open .menu_icon {
         transform: translateX(40px);
         /* https://www.quackit.com/css/animations/examples/css_animation_staggered_list_slide.cfm */
         animation: slideIn 0.4s forwards;
+    }
+
+    .menu-simple a {
+        font-size: 15px;
+        padding: 6px 10px;
     }
 
     .menu.responsive a:nth-child(1) { animation-delay: 0.05s; }

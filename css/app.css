@@ -58,12 +58,14 @@ section {
     /* All box-shadows was generated with this website: https://active-vision.ru/icon/box-shadow/ */
     box-shadow: 0 8px 20px rgba(0,0,0,0.25);
     z-index: 1000;
+    overflow: hidden;
 }
 
 .app-header-content {
     width: 55%;
     margin-left: auto;
     align-content: center;
+
 }
 /* Found here: https://1stwebdesigner.com/how-to-animate-gradient-text-using-css/ */
 @keyframes gradientShift {
@@ -97,6 +99,7 @@ section {
     opacity: 0;
     transform: translateY(-10px);
     animation: fadeInSlide 0.8s forwards;
+    z-index: 100;
     position: relative;
 }
 .session-info.show {
@@ -167,7 +170,7 @@ section {
 .app-main {
     padding: 10px 28px;
     max-width: 1000px;
-    margin: 80px auto 48px auto;
+    margin: 50px auto 48px auto;
 }
 
 /* App Sections */
@@ -721,6 +724,18 @@ input[type="text"]{
     margin-bottom: 10px;
 }
 
+/*location notice*/
+.location-notice {
+    font-size: 13px;
+    color: #2A169A;
+    background: rgba(167, 252, 71, 0.15);
+    border-left: 3px solid #A7FC47;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: 4px;
+    margin-bottom: 10px;
+}
+
 /* Question image */
 .question-image img {
     max-width: 100%;
@@ -736,6 +751,16 @@ input[type="text"]{
     border-radius: 12px;
     margin-bottom: 10px;
     text-align: center;
+    color: #d8000c;
+}
+
+.feedback-message.success {
+    background: rgba(167, 252, 71, 0.2);
+    color: #2A5500;
+}
+
+.feedback-message.error {
+    background: rgba(255, 0, 0, 0.08);
     color: #d8000c;
 }
 
@@ -867,7 +892,12 @@ input[type="text"]{
 }
 .location-wrapper {
     position: relative;
-    margin-bottom: 48px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding-left: 28px;
+    padding-right: 28px;
+    padding-bottom: 36px;
+    box-sizing: border-box;
 }
 
 .location-status.show {
@@ -886,8 +916,8 @@ input[type="text"]{
 }
 .location-update {
     position: absolute;
-    top: calc(100% + 6px);
-    right: 0;
+    top: 60px;
+    right: 28px;
     background: #2A169A;
     color: #A7FC47;
     font-size: 13px;

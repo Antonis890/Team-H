@@ -84,6 +84,7 @@ section {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
     width: 100%;
     max-width: 900px;
     margin: 30px auto -50px auto;
@@ -102,6 +103,14 @@ section {
     z-index: 100;
     position: relative;
 }
+
+.session-info-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
 .session-info.show {
     animation: fadeDown 0.4s ease;
 }
@@ -151,7 +160,9 @@ section {
 
 @media screen and (max-width: 600px) {
     .session-info {
-        flex-direction: column;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
         gap: 8px;
         padding: 12px 16px;
         width: 100%;
@@ -161,8 +172,9 @@ section {
     }
 
     .player-name, .current-score {
-        width: 100%;
-        font-size: 18px;
+        width: auto;
+        font-size: 14px;
+        padding: 4px 8px;
     }
 }
 
@@ -438,7 +450,6 @@ section {
 }
 
 /* Results section */
-.final-score-container,
 .leaderboard-section {
     background: #f0f0f0;
     border-radius: 12px;
@@ -449,12 +460,6 @@ section {
 .leaderboard-modal .modal-content {
     overflow-y: auto;
     overflow-x: hidden;
-}
-
-.final-score-number {
-    font-size: 36px;
-    font-weight: 800;
-    color: #2A169A;
 }
 
 .leaderboard-display p {
@@ -471,14 +476,16 @@ section {
     color: #d8000c;
 }
 #leaderboardBtn {
-    padding: 0;
-    width: 40px;
-    height: 40px;
+    padding: 8px 14px;
+    width: auto !important;
+    height: auto;
+    border-radius: 10px;
+    font-size: 16px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    font-size: 20px;
+    gap: 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 /* Mobile-friendly */
 @media screen and (max-width: 600px) {
@@ -527,22 +534,9 @@ section {
         display: block;
     }
 
-    .session-info {
-        position: relative;
-        top: auto;
-        right: auto;
-        transform: none;
-        margin: 16px auto 0 auto;
-        flex-direction: row;
-        justify-content: center;
-        gap: 12px;
-        width: auto;
-        max-width: 300px;
-    }
-
-    .player-name, .current-score {
-        font-size: 16px;
+    #leaderboardBtn {
         padding: 8px 12px;
+        font-size: 14px;
     }
 
     .app-section {
@@ -754,14 +748,6 @@ input[type="text"]{
     border-radius: 8px;
     margin-top: 4px;
     margin-bottom: 10px;
-}
-
-/* Question image */
-.question-image img {
-    max-width: 100%;
-    border-radius: 12px;
-    margin-bottom: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
 /* Feedback message */
@@ -985,7 +971,6 @@ input[type="text"]{
     max-width: 500px;
     width: 90%;
     max-height: 80vh;
-    overflow-y: auto;
     box-shadow: 0 8px 20px rgba(42, 22, 154, 0.3);
     position: relative;
 }

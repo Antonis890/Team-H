@@ -291,6 +291,26 @@ section {
     box-shadow: 0 2px 0 #1e0f7a;
 }
 
+.app-btn:disabled {
+    background-color: #c8c8c8;
+    color: #7a7a7a;
+    box-shadow: 0 4px 0 #0a0a0a;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.app-btn:disabled:active {
+    transform: none;
+    box-shadow: 0 4px 0 #0a0a0a;
+}
+
+#skipQuestionBtn:disabled {
+    background-color: #1a0e6a;
+    color: rgba(167, 252, 71, 0.4);
+    box-shadow: 0 4px 0 #0f0840;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
 
 .app-btn-home {
     background: rgba(255, 255, 255, 0.08);
@@ -1204,12 +1224,15 @@ input[type="text"]{
     overflow: hidden;
     border: 3px solid #A7FC47;
     box-shadow: 0 0 20px rgba(167, 252, 71, 0.4);
+    width: 100%;
+    aspect-ratio: 4 / 3;
 }
 
 .qr-video {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 .qr-modal-header h3{
     text-align: center;
